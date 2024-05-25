@@ -5,8 +5,14 @@ $dbuser = "root";
 $dbpass = "";
 $dbname = "mcis";
 
-if(!$con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname))
-{
 
-	die("failed to connect!");
+
+// Create connection
+$conn = new mysqli($dbhost, $dbuser, $dbpass,$dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
 }
+
+?>

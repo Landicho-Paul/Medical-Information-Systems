@@ -1,3 +1,12 @@
+<?php
+// Start the session
+session_start();
+
+        // Start the session
+
+
+include("connect.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -242,11 +251,11 @@ body.showCart .cartTab {
     background-color: #eee;
 }
 
-.listCart .item img {
+.listCart  img {
     width: 100%;
 }
 
-.listCart .item {
+.listCart  {
     display: grid;
     grid-template-columns: 70px 150px 50px 1fr;
     gap: 10px;
@@ -271,7 +280,7 @@ body.showCart .cartTab {
     font-family: "Oswald", sans-serif;
 }
 
-.listCart .item:nth-child(even) {
+.listCart :nth-child(even) {
     background-color: #eee1;
 }
 
@@ -290,7 +299,7 @@ body.showCart .cartTab {
 }
 
 
-.listCart .item {
+.listCart  {
     display: grid;
     grid-template-columns: 70px 150px 50px 1fr 30px; /* Added extra column for the remove item icon */
     gap: 10px;
@@ -300,19 +309,45 @@ body.showCart .cartTab {
 }
 
 
-.listCart .item .uil-times-circle {
+.listCart .uil-times-circle {
     cursor: pointer;
     font-size: 10px;
 }
 
-.listCart .item .uil-times-circle:hover {
-    color: red; /* Change color on hover */
+.listCart  .uil-times-circle:hover {
+    color: green; /* Change color on hover */
+}
+.alert {
+  padding: 20px;
+  background-color: green;
+  color: white;
 }
 
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
     </style>
 </head>
 <body>
+<?php
+try {
+	echo $_SESSION["error"];
+} catch (Exception $ex) {
+	
+}
 
+?>
 <div class="navbar">
     <div class="icon">
         <a href="index.php" class="logo" style="text-decoration: none;">MCIS</a>
@@ -335,8 +370,11 @@ body.showCart .cartTab {
             </ul>
         </div>
 
+        
+
         <a class="btn" style="margin-bottom: 110px; color: orange;" id="sidebarToggle" role="button" aria-controls="offcanvasExample" onclick="toggleCart()">
     <i class="fa fa-shopping-cart" id="cartIcon"></i>
+        
 </a> 
 
 
@@ -344,15 +382,44 @@ body.showCart .cartTab {
         <input class="srch" type="search" name="" placeholder="Search" id="medicineSearch">
         <button class="btnsearch" style="margin-right: 10px;" onclick="searchMedicine()">Search</button>
     </div>
-
+    
     <div class="cartTab" id="cartTab">
     <h1>Shopping Cart</h1>
     <div class="listCart">
         
+    <?php
+            $sql =  "SELECT * FROM addtocart WHERE Checkout = ''";
+            $result = mysqli_query($conn, $sql);
+            $datas = array();
+            if(mysqli_num_rows($result) > 0 ){
+              while($row =mysqli_fetch_assoc($result)){
+                  $datas[] = $row;
+              }
+            }
+            
+            foreach($datas as $data){
+              
+              
+            echo '
+
+            <img src="'.$data['Image'].'" alt="'.$data['Name'].'">
+            <div>'.$data['Name'].'</div> 
+            <div class="price">'.$data['Price'].'</div>
+            <div class="quantity">
+                <span onclick="changeQuantity(this, -1)">-</span>
+                <span>'.$data['Quantity'].'</span>
+                <span onclick="changeQuantity(this, 1)">+</span>
+            </div>
+            <span class="uil uil-times-circle" onclick="removeItem(this)"></span>
+                
+                ';
+            }
+
+          ?>
     </div>
     <div class="btn">
         <button class="close" style="font-size: 14px;">CLOSE</button>
-        <button class="checkOut" style="font-size: 14px;">Check Out</button>
+        <button class="checkOut" onclick="goToContactPage()">Check Out</button>
     </div>
 </div>
 
@@ -364,13 +431,37 @@ body.showCart .cartTab {
 <div class="card">
     <img src="images/thermo.jpg" class="card-img-top" alt="Thermometer">
     <div class="card-body">
-        <h5 class="card-title">Omron Digital Thermometer MC-246</h5>
-        <h3>Price: PHP 298.00</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#thermoModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/thermo.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Omron Digital Thermometer MC-246" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="298" >
+            </div>
+            
+            
+        
+            <h5 class="card-title">Omron Digital Thermometer MC-246</h5>
+            <h3>Price: PHP 298.00</h3>
+            <h3>In Stock</h3>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#thermoModal">
+                More Info
+            </button>
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button> 
+            
+            -->
+        </form>
+        
     </div>
 </div>
 
@@ -398,13 +489,39 @@ body.showCart .cartTab {
 <div class="card">
     <img src="images/smask.jpg" class="card-img-top" alt="Surgical Mask">
     <div class="card-body">
-        <h5 class="card-title">Healmed 3 Ply Surgical Face Mask - 10s</h5>
-        <h3>Price: PHP 142.90</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#smaskModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+
+
+
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/smask.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Healmed 3 Ply Surgical Face Mask - 10s" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="142" >
+            </div>
+            
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button> 
+            
+            -->
+            <h5 class="card-title">Healmed 3 Ply Surgical Face Mask - 10s</h5>
+            <h3>Price: PHP 142.90</h3>
+            <h3>In Stock</h3>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#smaskModal">
+                More Info
+            </button>
+            
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+    
+        </form>
     </div>
 </div>
 
@@ -430,13 +547,48 @@ body.showCart .cartTab {
 <div class="card">
     <img src="images/3dmask.jpg" class="card-img-top" alt="3M Mask">
     <div class="card-body">
-        <h5 class="card-title">3M 9513 KN95 Adult Facemask</h5>
-        <h3>Price: PHP 55.00</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#3dmaskModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+
+
+
+
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/3dmask.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="3M 9513 KN95 Adult Facemask" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="55" >
+            </div>
+            
+            
+        
+            <h5 class="card-title">3M 9513 KN95 Adult Facemask</h5>
+            <h3>Price: PHP 55.00</h3>
+            <h3>In Stock</h3>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#3dmaskModal">
+                More Info
+            </button>
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+            
+            -->
+        </form>
+
+
+
+
+
+        
+        
     </div>
 </div>
 
@@ -462,13 +614,44 @@ body.showCart .cartTab {
 <div class="card">
     <img src="images/bloodpressure.jpg" class="card-img-top" alt="bloodpressure">
     <div class="card-body">
-        <h5 class="card-title">Omron HEM 7120 Automatic Blood Pressure Monitor</h5>
-        <h3>Price: PHP 2780.00</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bloodpressureModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+
+
+
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/bloodpressure.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Omron HEM 7120 Automatic Blood Pressure Monitor" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="2780" >
+            </div>
+            
+        
+            <h5 class="card-title">Omron HEM 7120 Automatic Blood Pressure Monitor</h5>
+            <h3>Price: PHP 2780.00</h3>
+            <h3>In Stock</h3>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bloodpressureModal">
+                More Info
+            </button>
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+            
+            -->
+        </form>
+
+
+
+        
+        
     </div>
 </div>
 
@@ -495,13 +678,47 @@ body.showCart .cartTab {
 <div class="card">
     <img src="images/pregnancytest.jpg" class="card-img-top" alt="/pregnancytest">
     <div class="card-body">
-        <h5 class="card-title">Partners Pregnancy Test</h5>
-        <h3>Price: PHP 72.00</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#/pregnancytestModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+
+
+
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/pregnancytest.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Partners Pregnancy Test" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="72" >
+            </div>
+            
+            
+        
+            <h5 class="card-title">Partners Pregnancy Test</h5>
+            <h3>Price: PHP 72.00</h3>
+            <h3>In Stock</h3>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#/pregnancytestModal">
+                More Info
+            </button>
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+            
+            -->
+        </form>
+
+
+
+
+
+        
+        
     </div>
 </div>
 
@@ -532,13 +749,45 @@ body.showCart .cartTab {
 <div class="card">
     <img src="images/nebulizer.jpg" class="card-img-top" alt="nebulizer">
     <div class="card-body">
-        <h5 class="card-title">Omron NE C801VVV Compressor Nebulizer</h5>
-        <h3>Price: PHP 72.00</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nebulizerModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+
+
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/nebulizer.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Omron NE C801VVV Compressor Nebulizer" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="73" >
+            </div>
+            
+            
+        
+            <h5 class="card-title">Omron NE C801VVV Compressor Nebulizer</h5>
+            <h3>Price: PHP 73.00</h3>
+            <h3>In Stock</h3>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nebulizerModal">
+                More Info
+            </button>
+            
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+            
+            -->
+        </form>
+
+
+
+
+        
     </div>
 </div>
 
@@ -605,6 +854,9 @@ body.showCart .cartTab {
 </script>
 
 <script>
+    function goToContactPage() {
+            window.location.href = 'updateCart.php'; // Replace 'contact.html' with the actual URL of the contact page
+        }
     function searchMedicine() {
         var input = document.getElementById("medicineSearch").value.toUpperCase();
         var cards = document.getElementsByClassName("card");
@@ -651,7 +903,7 @@ function addToCart(button) {
     newItem.classList.add('item');
     newItem.setAttribute('data-title', title);
     newItem.innerHTML = `
-    
+
         <img src="${imgSrc}" alt="${title}">
         <div>${title}</div> 
         <div class="price">${price}</div>
@@ -662,6 +914,9 @@ function addToCart(button) {
         </div>
         <span class="uil uil-times-circle" onclick="removeItem(this)"></span>
     `;
+    const data = imgSrc;
+    
+    console.log(data);
 
     // Append the new item to the cartTab
     cartTab.appendChild(newItem);
@@ -669,7 +924,9 @@ function addToCart(button) {
     // Show the cartTab
     document.body.classList.add('showCart');
 }
+<?php 
 
+?>
 function toggleCart() {
     document.body.classList.toggle('showCart');
 }
@@ -698,3 +955,7 @@ function removeItem(button) {
 
 </body>
 </html>
+        <?php
+        // Start the session
+        $_SESSION["error"] = "";
+        ?>
