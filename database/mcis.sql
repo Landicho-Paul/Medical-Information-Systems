@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2024 at 01:36 PM
+-- Generation Time: May 25, 2024 at 06:17 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -20,6 +20,36 @@ SET time_zone = "+00:00";
 --
 -- Database: `mcis`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `addtocart`
+--
+
+CREATE TABLE `addtocart` (
+  `cart_id` int(11) NOT NULL,
+  `Name` varchar(150) NOT NULL,
+  `Price` int(11) NOT NULL,
+  `Quantity` int(11) NOT NULL,
+  `Date` varchar(150) NOT NULL,
+  `Image` varchar(140) NOT NULL,
+  `Checkout` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `addtocart`
+--
+
+INSERT INTO `addtocart` (`cart_id`, `Name`, `Price`, `Quantity`, `Date`, `Image`, `Checkout`) VALUES
+(48, 'Omron Digital Thermometer MC-246', 298, 1, '2024-05-25 05:50:12pm', 'images/thermo.jpg', 'Approve'),
+(49, 'Omron Digital Thermometer MC-246', 298, 1, '2024-05-25 05:50:45pm', 'images/thermo.jpg', 'Approve'),
+(50, 'Healmed 3 Ply Surgical Face Mask - 10s', 142, 1, '2024-05-25 05:51:01pm', 'images/smask.jpg', 'Approve'),
+(51, 'Omron Digital Thermometer MC-246', 298, 1, '2024-05-25 05:57:29pm', 'images/thermo.jpg', 'Approve'),
+(52, 'Omron Digital Thermometer MC-246', 298, 1, '2024-05-25 05:59:38pm', 'images/thermo.jpg', 'Approve'),
+(53, '3M 9513 KN95 Adult Facemask', 55, 1, '2024-05-25 05:59:43pm', 'images/3dmask.jpg', 'Approve'),
+(54, 'Partners Pregnancy Test', 72, 1, '2024-05-25 05:59:46pm', 'images/pregnancytest.jpg', 'Approve'),
+(55, 'Omron Digital Thermometer MC-246', 298, 1, '2024-05-25 06:14:35pm', 'images/thermo.jpg', 'Approve');
 
 -- --------------------------------------------------------
 
@@ -146,6 +176,12 @@ INSERT INTO `users` (`id`, `user_id`, `username`, `password`, `date`) VALUES
 --
 
 --
+-- Indexes for table `addtocart`
+--
+ALTER TABLE `addtocart`
+  ADD PRIMARY KEY (`cart_id`);
+
+--
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
@@ -169,6 +205,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `addtocart`
+--
+ALTER TABLE `addtocart`
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `customer`

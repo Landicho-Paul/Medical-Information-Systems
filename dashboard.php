@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT * FROM users";
 $result = $conn->query($sql);
-
+/*
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         echo "<tr>";
@@ -26,7 +26,7 @@ if ($result->num_rows > 0) {
 } else {
     echo "<tr><td colspan='4'>0 results</td></tr>";
 }
-
+*/
 
 
 $conn->close();

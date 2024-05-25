@@ -1,3 +1,10 @@
+<?php
+
+    require_once("connect.php");
+    $query = " SELECT * FROM addtocart WHERE Checkout = 'Approve' ";
+    $result = mysqli_query($conn,$query);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,7 +119,6 @@ tbody tr:nth-child(odd) {
             <tr class="column">
                 <th>Date</th>
                 <th>Order ID</th>
-                <th>Name</th>
                 <th>Items</th>
                 <th>Quantity</th>
                 <th>Total</th>
@@ -121,33 +127,29 @@ tbody tr:nth-child(odd) {
         </thead>
         <tbody>
             <!-- Sample row, replace with PHP-generated rows -->
-            <tr class="row">
-                <td>2024-05-25</td>
-                <td>12345</td>
-                <td>John Doe</td>
-                <td>Medicine, Personal Care</td>
-                <td>2</td>
-                <td>$50.00</td>
-                <td>
-                    <a href="#"><ion-icon name="create"></ion-icon></a>
-                    <a href="#"><ion-icon name="trash"></ion-icon></a>
-                    <a href="#"><ion-icon name="download"></ion-icon></a>
-                </td>
-            </tr>
             <tr>
-                <td>2024-05-25</td>
-                <td>12345</td>
-                <td>John Doe</td>
-                <td>Medicine, Personal Care</td>
-                <td>2</td>
-                <td>$50.00</td>
+                <?php 
+                
+                    while($row = mysqli_fetch_assoc($result)){
+                
+                ?>
+                <td><?php echo $row['Date'] ?></td>
+                <td><?php echo $row['cart_id'] ?></td>
+                <td><?php echo $row['Name'] ?></td>
+                <td><?php echo $row['Quantity'] ?></td>
+                <td>$<?php echo $row['Price'] ?>.00</td>
                 <td>
                     <a href="#"><ion-icon name="create"></ion-icon></a>
                     <a href="#"><ion-icon name="trash"></ion-icon></a>
                     <a href="#"><ion-icon name="download"></ion-icon></a>
                 </td>
+                
             </tr>
-        </tbody>
+            <?php 
+                
+                }
+                
+            ?>
     </table>
 </div>
     </div>

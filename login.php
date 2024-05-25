@@ -10,7 +10,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 
   if(!empty($user_name) && !empty($password) && !is_numeric($user_name)) {
       $query = "SELECT * FROM users WHERE username = '$user_name' LIMIT 1";
-      $result = mysqli_query($con, $query);
+      $result = mysqli_query($conn, $query);
 
       if($result && mysqli_num_rows($result) > 0) {
           $user_data = mysqli_fetch_assoc($result);

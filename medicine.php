@@ -460,6 +460,10 @@ function changeQuantity(button, delta) {
 <div class="cartTab" id="cartTab">
     <h1>Shopping Cart</h1>
     <div class="listCart">
+
+
+
+        
         
     </div>
     <div class="btn">
@@ -523,13 +527,51 @@ function changeQuantity(button, delta) {
     <div class="card">
         <img src="images/para.jpg" class="card-img-top" alt="Paracetamol">
         <div class="card-body">
+
+
+
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/thermo.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Omron Digital Thermometer MC-246" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="298" >
+            </div>
+            
+            
+        
             <h5 class="card-title">Biogesic Paracetamol 500mg 10 Tablet</h5>
             <h3>Price: PHP 105.00</h3>
             <h3>In Stock</h3>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#paracetamolModal">
                 More Info
             </button>
-            <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+            
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+
+           <!-- 
+            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button> 
+            
+            -->
+        </form>
+
+
+
+
+
+
+
+
+
+            
         </div>
     </div>
 
