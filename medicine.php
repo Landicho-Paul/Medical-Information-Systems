@@ -13,7 +13,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
@@ -63,7 +63,7 @@
 .card h3 {
     font-size: 18px;
     margin-bottom: 10px;
-    font-family: "Oswald", sans-serif;
+    font-family: 'Times New Roman', Times, serif;
 }
 .card-img-top {
     width: 100%;
@@ -137,7 +137,7 @@
 }
 .btn {
     margin-top: 30px;
-    background-color: #ff7200;
+    background-color: #0000FF;
     color: #fff;
     padding: 5px 10px;
     cursor: pointer;
@@ -183,9 +183,9 @@ img {
     font-family: "Oswald", sans-serif;
 }
 
-.fa-cart-cart{
-  font-size: 24px; /* Adjust size as needed */
-  background-color: #007bff; /* Example background color */
+.fa-shopping-cart{
+  font-size: 13px; /* Adjust size as needed */
+  background-color: #FF8400; /* Example background color */
   color: #ffffff; /* Example text color */
   border: none;
   border-radius: 50%; /* To make it circular */
@@ -197,6 +197,12 @@ img {
   width: 24px; /* Adjust the width as needed */
   height: 24px; /* Adjust the height as needed */
   margin-right: 5px; /* Adjust the spacing between the icon and the image */
+}
+.btn-shopping-cart{
+    color: orange;
+    border-radius: 10%;
+    position: relative; /* Enable relative positioning */
+    left: 250px; /* Move to the right by 150px */
 }
 
 
@@ -212,6 +218,7 @@ img {
     grid-template-rows: 70px 1fr 70px;
     transition: .5s;
     z-index: 999; /* Ensure it's above other content */
+    font-family: "Oswald", sans-serif;
 }
 
 body.showCart .cartTab {
@@ -224,21 +231,26 @@ body.showCart .cartTab {
     font-weight: 300;
 }
 
-.cartTab .btn {
+.cartTab .btn-cls {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    font-family: "Oswald", sans-serif;
 }
 
 .cartTab button {
-    background-color: #E8BC0E;
     border: none;
-    font-family: Poppins;
+    border-radius: 50px;
+    font-family: "Oswald", sans-serif;
     font-weight: 500;
     cursor: pointer;
+
 }
 
 .cartTab .close {
-    background-color: #eee;
+    background-color: #EEEEEE;
+}
+.cartTab .checkOut {
+    background-color: #FFA500;
 }
 
 .listCart .item img {
@@ -301,7 +313,7 @@ body.showCart .cartTab {
 
 .listCart .item .uil-times-circle {
     cursor: pointer;
-    font-size: 30px;
+    font-size: 10px;
 }
 
 .listCart .item .uil-times-circle:hover {
@@ -314,17 +326,26 @@ body.showCart .cartTab {
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Select the shopping cart icon
-        let iconCart = document.querySelector('#cartIcon');
-        // Select the body element
-        let body = document.querySelector('body');
+   document.addEventListener("DOMContentLoaded", function() {
+    // Select the shopping cart icon
+    let iconCart = document.querySelector('#cartIcon');
+    // Select the body element
+    let body = document.querySelector('body');
+    // Select the close button
+    let closeButton = document.querySelector('.close');
 
-        // Add click event listener to the shopping cart icon
-        iconCart.addEventListener('click', () => { 
-            // Toggle the 'showCart' class on the body element
-            body.classList.toggle('showCart');
-        });
+    // Add click event listener to the shopping cart icon
+    iconCart.addEventListener('click', () => {
+        // Toggle the 'showCart' class on the body element
+        body.classList.toggle('showCart');
+    });
+
+    // Add click event listener to the close button
+    closeButton.addEventListener('click', () => {
+        // Remove the 'showCart' class from the body element
+        body.classList.remove('showCart');
+    });
+
 
         // Function to search for medicine
         function searchMedicine() {
@@ -452,7 +473,7 @@ function changeQuantity(button, delta) {
             </ul>
         </div>
 
-        <a class="btn " style="margin-bottom: 110px; color: orange;" id="sidebarToggle" role="button" aria-controls="offcanvasExample">
+        <a class="btn-shopping-cart " style="margin-bottom: 100px; color: orange;" id="sidebarToggle" role="button" aria-controls="offcanvasExample">
   <i class="fa fa-shopping-cart" id="cartIcon"></i>
 </a> 
 
@@ -466,7 +487,7 @@ function changeQuantity(button, delta) {
         
         
     </div>
-    <div class="btn">
+    <div class="btn-cls">
         <button class="close" style="font-size: 14px;">CLOSE</button>
         <button class="checkOut" style="font-size: 14px;">Check Out</button>
     </div>
@@ -530,24 +551,22 @@ function changeQuantity(button, delta) {
 
 
 
-
         <form class="card-body" method="post">
             <div class="row">
                 
-                <input type="hidden" name="image" value="images/thermo.jpg" >
+                <input type="hidden" name="image" value="images/para.jpg" >
             </div>
             <div class="row">
                 
-                <input type="hidden" name="title" value="Omron Digital Thermometer MC-246" >
+                <input type="hidden" name="title" value="Biogesic Paracetamol 500mg 10 Tablet" >
             </div>
 
             <div class="row">
                 
-                <input type="hidden" name="price"  value="298" >
+                <input type="hidden" name="price"  value="105" > 
+                
             </div>
-            
-            
-        
+     
             <h5 class="card-title">Biogesic Paracetamol 500mg 10 Tablet</h5>
             <h3>Price: PHP 105.00</h3>
             <h3>In Stock</h3>
@@ -556,23 +575,10 @@ function changeQuantity(button, delta) {
             </button>
             
             <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
-
-           <!-- 
-            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button> 
-            
-            -->
+           
         </form>
 
-
-
-
-
-
-
-
-
-            
-        </div>
+      </div>
     </div>
 
     <div class="modal fade" id="paracetamolModal" tabindex="-1" aria-labelledby="paracetamolModalLabel" aria-hidden="true">

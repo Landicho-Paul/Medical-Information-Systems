@@ -16,11 +16,12 @@ include("connect.php");
     <link rel="stylesheet" href="css/styles.css"> 
     <link rel="shortcut icon" href="images/mlog.jpg">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+
     <style>
 
 .logo {
@@ -142,7 +143,7 @@ include("connect.php");
 
 .btn{
     margin-top: 30px;
-    background-color: #ff7200;
+    background-color: #0000FF;
     color: #fff;
     padding: 5px 10px;
     cursor: pointer;
@@ -193,9 +194,9 @@ img {
     font-family: "Oswald", sans-serif;
 }
 
-.fa-cart-cart{
-  font-size: 24px; /* Adjust size as needed */
-  background-color: #007bff; /* Example background color */
+.fa-shopping-cart{
+  font-size: 13px; /* Adjust size as needed */
+  background-color: #FF8400; /* Example background color */
   color: #ffffff; /* Example text color */
   border: none;
   border-radius: 50%; /* To make it circular */
@@ -207,6 +208,13 @@ img {
   width: 24px; /* Adjust the width as needed */
   height: 24px; /* Adjust the height as needed */
   margin-right: 5px; /* Adjust the spacing between the icon and the image */
+}
+.btn-shopping-cart{
+    color: orange;
+    border-radius: 10%;
+    position: relative; /* Enable relative positioning */
+    left: 250px; /* Move to the right by 150px */
+    margin-bottom: 95px;
 }
 
 
@@ -222,6 +230,8 @@ img {
     grid-template-rows: 70px 1fr 70px;
     transition: .5s;
     z-index: 999; /* Ensure it's above other content */
+    font-family: "Oswald", sans-serif;
+    
 }
 
 body.showCart .cartTab {
@@ -234,33 +244,40 @@ body.showCart .cartTab {
     font-weight: 300;
 }
 
-.cartTab .btn {
+.cartTab .btn-cls {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    font-family: "Oswald", sans-serif;
+
 }
 
 .cartTab button {
-    background-color: #E8BC0E;
+    border-radius: 50px;
     border: none;
-    font-family: Poppins;
+    font-family: "Oswald", sans-serif;
     font-weight: 500;
     cursor: pointer;
+    
 }
 
 .cartTab .close {
-    background-color: #eee;
+    background-color: #EEEEEE;
 }
-
+.cartTab .checkOut {
+    background-color: #FFA500;
+    
+    
+}
 .listCart  img {
     width: 100%;
 }
 
 .listCart  {
-    display: grid;
-    grid-template-columns: 70px 150px 50px 1fr;
-    gap: 10px;
-    text-align: center;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Add some gap between items */
+    overflow-y: auto; /* Enable scrolling if items exceed height */
+    max-height: calc(100% - 140px); /* Adjust maximum height as needed */
 }
 
 .listCart .quantity span {
@@ -311,12 +328,10 @@ body.showCart .cartTab {
 
 .listCart .uil-times-circle {
     cursor: pointer;
-    font-size: 10px;
+    font-size: 25px;
 }
 
-.listCart  .uil-times-circle:hover {
-    color: green; /* Change color on hover */
-}
+
 .alert {
   padding: 20px;
   background-color: green;
@@ -337,9 +352,14 @@ body.showCart .cartTab {
 .closebtn:hover {
   color: black;
 }
+
     </style>
+
+
 </head>
 <body>
+
+
 <?php
 try {
 	echo $_SESSION["error"];
@@ -372,7 +392,7 @@ try {
 
         
 
-        <a class="btn" style="margin-bottom: 110px; color: orange;" id="sidebarToggle" role="button" aria-controls="offcanvasExample" onclick="toggleCart()">
+        <a class="btn-shopping-cart" id="sidebarToggle" role="button" aria-controls="offcanvasExample" onclick="toggleCart()">
     <i class="fa fa-shopping-cart" id="cartIcon"></i>
         
 </a> 
@@ -387,21 +407,21 @@ try {
     <h1>Shopping Cart</h1>
     <div class="listCart">
         
-    <?php
-            $sql =  "SELECT * FROM addtocart WHERE Checkout = ''";
-            $result = mysqli_query($conn, $sql);
-            $datas = array();
-            if(mysqli_num_rows($result) > 0 ){
-              while($row =mysqli_fetch_assoc($result)){
-                  $datas[] = $row;
-              }
-            }
-            
-            foreach($datas as $data){
-              
-              
-            echo '
+<?php
+    include('connect.php');
+    $sql = "SELECT * FROM addtocart WHERE Checkout = ''";
+    $result = mysqli_query($conn, $sql);
+    $datas = array();
 
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $datas[] = $row;
+        }
+    }
+
+    foreach ($datas as $data) {
+        echo '
+        <div class="product">
             <img src="'.$data['Image'].'" alt="'.$data['Name'].'">
             <div>'.$data['Name'].'</div> 
             <div class="price">'.$data['Price'].'</div>
@@ -410,14 +430,16 @@ try {
                 <span>'.$data['Quantity'].'</span>
                 <span onclick="changeQuantity(this, 1)">+</span>
             </div>
-            <span class="uil uil-times-circle" onclick="removeItem(this)"></span>
-                
-                ';
-            }
+            <a href="#" id="'.$data['product_id'].'" class="delbutton" title="Click to Delete the product">
+                <button class="btn btn-danger"><i class="icon-trash"></i></button>
+            </a>
+        </div>
+        ';
+    }
+?>
 
-          ?>
     </div>
-    <div class="btn">
+    <div class="btn-cls">
         <button class="close" style="font-size: 14px;">CLOSE</button>
         <button class="checkOut" onclick="goToContactPage()">Check Out</button>
     </div>
@@ -823,34 +845,20 @@ try {
 
 
 <script>
-    function searchMedicine() {
-        var input = document.getElementById("medicineSearch").value.toUpperCase();
-        var cards = document.getElementsByClassName("card");
+ function searchMedicine() {
+    // Your search logic here
+    console.log("Searching for medicine...");
+}
 
-        for (var i = 0; i < cards.length; i++) {
-            var title = cards[i].getElementsByClassName("card-title")[0].innerText.toUpperCase();
+// Add event listener for click event
+document.getElementById("searchButton").addEventListener("click", searchMedicine);
 
-            if (title.includes(input)) {
-                cards[i].style.display = "";
-            } else {
-                cards[i].style.display = "none";
-            }
-        }
-    }
-    
-    function searchMedicineEnter(event) {
-        if (event.keyCode === 13) {
-            searchMedicine();
-        }
-    }
-    
-    document.getElementById("medicineSearch").addEventListener("input", function() {
+// Add event listener for keypress event
+document.getElementById("searchInput").addEventListener("keypress", function(event) {
+    if (event.key === 'Enter') {
         searchMedicine();
-    });
-
-    document.getElementById("medicineSearch").addEventListener("keydown", function(event) {
-        searchMedicineEnter(event);
-    });
+    }
+});
 </script>
 
 <script>
@@ -889,41 +897,7 @@ try {
 </script>
 
 <script>
-// Add a Medicine in shopping cart
-function addToCart(button) {
-    const card = button.closest('.card');
-    const title = card.querySelector('.card-title').innerText;
-    const price = card.querySelector('h3').innerText.replace('Price: ', '');
-    const imgSrc = card.querySelector('.card-img-top').src;
 
-    const cartTab = document.querySelector('.listCart');
-
-    // Create a new item element
-    const newItem = document.createElement('div');
-    newItem.classList.add('item');
-    newItem.setAttribute('data-title', title);
-    newItem.innerHTML = `
-
-        <img src="${imgSrc}" alt="${title}">
-        <div>${title}</div> 
-        <div class="price">${price}</div>
-        <div class="quantity">
-            <span onclick="changeQuantity(this, -1)">-</span>
-            <span>1</span>
-            <span onclick="changeQuantity(this, 1)">+</span>
-        </div>
-        <span class="uil uil-times-circle" onclick="removeItem(this)"></span>
-    `;
-    const data = imgSrc;
-    
-    console.log(data);
-
-    // Append the new item to the cartTab
-    cartTab.appendChild(newItem);
-
-    // Show the cartTab
-    document.body.classList.add('showCart');
-}
 <?php 
 
 ?>
@@ -948,6 +922,16 @@ function removeItem(button) {
     const totalPrice = quantity * pricePerUnit;
     priceElement.innerText = `$${totalPrice.toFixed(2)}`;
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Add click event listener to the close button
+    closeButton.addEventListener('click', () => {
+        // Remove the 'showCart' class from the body element
+        body.classList.remove('showCart');
+    });
+});
+
 
     </script>
 

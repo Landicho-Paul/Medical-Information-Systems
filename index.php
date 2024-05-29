@@ -149,16 +149,19 @@ border-style: none;
 </head>
 <body>
 
-<?php
+
+<?php 
 session_start();
 
 // Check if user is logged in
 if(isset($_SESSION['user_id'])) {
     // User is logged in
     $loggedIn = true;
+    $userRole = $_SESSION['user_role'];
 } else {
     // User is not logged in
     $loggedIn = false;
+    $userRole = null;
 }
 
 // Logout functionality

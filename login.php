@@ -17,10 +17,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
           
           if($user_data['password'] === $password) {
               $_SESSION['user_id'] = $user_data['user_id'];
-              if(strpos($user_name, '@admin') !== false) {
+              $_SESSION['user_role'] = (strpos($user_name, '@admin') !== false) ? 'admin' : 'customer';
+              
+              if($_SESSION['user_role'] === 'admin') {
                   header("Location: dashboard.php");
                   die;
-              } elseif(strpos($user_name, '@customer') !== false) {
+              } else {
                   header("Location: index.php");
                   die;
               }
@@ -33,6 +35,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
   } else {
       echo "Wrong username or password!";
   }
+
+  session_start();
+  if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+      echo '<div class="dashboard-button"><a href="dashboard.php">Dashboard</a></div>';
+  }
+  
 }
 ?>
 

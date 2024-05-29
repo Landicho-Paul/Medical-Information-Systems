@@ -137,7 +137,7 @@ tbody tr:nth-child(odd) {
                 <td><?php echo $row['cart_id'] ?></td>
                 <td><?php echo $row['Name'] ?></td>
                 <td><?php echo $row['Quantity'] ?></td>
-                <td>$<?php echo $row['Price'] ?>.00</td>
+                <td>₱ <?php echo $row['Price'] ?>.00</td>
                 <td>
                     <a href="#"><ion-icon name="create"></ion-icon></a>
                     <a href="#"><ion-icon name="trash"></ion-icon></a>

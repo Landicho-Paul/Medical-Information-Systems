@@ -1,3 +1,13 @@
+<?php
+// Start the session
+session_start();
+
+        // Start the session
+
+
+include("connect.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,15 +18,25 @@
     <link rel="shortcut icon" href="images/mlog.jpg">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-
 .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFA500;
+    font-family: "Oswald", sans-serif;
+    margin-bottom: 100px;
+}
 .card {
-    width: calc(33.33% - 70px);
+    width: calc(33.33% - 20px);
     margin: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -27,11 +47,11 @@
 }
 .card-body {
     padding: 13px;
-    height: 100%;
+    height: 105%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center; 
+    align-items: center;
 }
 .card h5, .card h3 {
     margin: 0;
@@ -41,14 +61,13 @@
     font-weight: bold;
     margin-top: 10px;
 }
-
 .card h5 {
-    font-size: 20px; 
+    font-size: 20px;
     margin-bottom: 10px;
+    font-family: "Oswald", sans-serif;
 }
-
 .card h3 {
-    font-size: 18px; 
+    font-size: 18px;
     margin-bottom: 10px;
     font-family: 'Times New Roman', Times, serif;
 }
@@ -63,16 +82,35 @@
         width: calc(50% - 20px);
     }
 }
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.menu {
+    flex-grow: 1.5;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+    right: 300px;
+    
+}
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
 .search {
     display: flex;
     align-items: center;
+    margin-bottom: 100px;
+    flex: 1; /* Allow the search container to grow */
 }
 
 .srch {
     flex: 1;
     padding: 5px 10px;
 }
-
 .btnsearch {
     padding: 5px 10px;
     cursor: pointer;
@@ -82,7 +120,6 @@
     border-radius: 4px;
     margin-left: 10px;
 }
-
 .modal {
     display: none;
     position: fixed;
@@ -94,7 +131,6 @@
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
 }
-
 .modal-body {
     max-height: 560px;
     overflow-y: auto;
@@ -107,20 +143,18 @@
     border-radius: 10px;
     max-width: 500px;
 }
-
-.btn{
+.btn {
     margin-top: 30px;
-    background-color: #ff7200;
+    background-color: #0000FF;
     color: #fff;
     padding: 5px 10px;
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    outline: none; 
+    outline: none;
     font-size: 18px;
+    font-family: "Oswald", sans-serif;
 }
-
-
 .close {
     color: #aaa;
     float: right;
@@ -132,14 +166,11 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
-}   
-
+}
 p {
     line-height: 1.5;
     margin-bottom: 15px;
 }
-
-
 img {
     max-width: 100%;
     height: auto;
@@ -147,7 +178,6 @@ img {
     margin-top: 15px;
     cursor: pointer;
 }
-
 .add-to-cart-btn {
     background-color: #52595D;
     color: white;
@@ -161,9 +191,9 @@ img {
     font-family: "Oswald", sans-serif;
 }
 
-.fa-cart-cart{
-  font-size: 24px; /* Adjust size as needed */
-  background-color: #007bff; /* Example background color */
+.fa-shopping-cart{
+  font-size: 13px; /* Adjust size as needed */
+  background-color: #FF8400; /* Example background color */
   color: #ffffff; /* Example text color */
   border: none;
   border-radius: 50%; /* To make it circular */
@@ -176,6 +206,14 @@ img {
   height: 24px; /* Adjust the height as needed */
   margin-right: 5px; /* Adjust the spacing between the icon and the image */
 }
+.btn-shopping-cart{
+    color: orange;
+    border-radius: 10%;
+    position: relative; /* Enable relative positioning */
+    left: 250px; /* Move to the right by 150px */
+    margin-bottom: 95px;
+}
+
 
 .cartTab {
     width: 600px;
@@ -189,6 +227,7 @@ img {
     grid-template-rows: 70px 1fr 70px;
     transition: .5s;
     z-index: 999; /* Ensure it's above other content */
+    font-family: "Oswald", sans-serif;
 }
 
 body.showCart .cartTab {
@@ -201,21 +240,24 @@ body.showCart .cartTab {
     font-weight: 300;
 }
 
-.cartTab .btn {
+.cartTab .btn-cls {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
 
 .cartTab button {
-    background-color: #E8BC0E;
+    border-radius: 50px;
     border: none;
-    font-family: Poppins;
+    font-family: "Oswald", sans-serif;
     font-weight: 500;
     cursor: pointer;
 }
 
 .cartTab .close {
-    background-color: #eee;
+    background-color: #E5E4E2;
+}
+.cartTab .checkOut {
+    background-color: #FFA500;
 }
 
 .listCart .item img {
@@ -285,9 +327,6 @@ body.showCart .cartTab {
     color: red; /* Change color on hover */
 }
 
-
-
-
     </style>
 </head>
 <body>
@@ -314,6 +353,24 @@ body.showCart .cartTab {
             </ul>
         </div>
 
+        <a class="btn-shopping-cart " id="sidebarToggle" role="button" aria-controls="offcanvasExample">
+  <i class="fa fa-shopping-cart" id="cartIcon"></i>
+</a> 
+
+<div class="cartTab" id="cartTab">
+    <h1>Shopping Cart</h1>
+    <div class="listCart">
+
+
+
+        
+        
+    </div>
+    <div class="btn-cls">
+        <button class="close" style="font-size: 14px;">CLOSE</button>
+        <button class="checkOut" style="font-size: 14px;">Check Out</button>
+    </div>
+</div>
 
     <div class="search">
         <input class="srch" type="search" name="" placeholder="Search" id="medicineSearch">
@@ -1355,6 +1412,27 @@ function removeItem(button) {
     const totalPrice = quantity * pricePerUnit;
     priceElement.innerText = `$${totalPrice.toFixed(2)}`;
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Select the shopping cart icon
+    let iconCart = document.querySelector('#cartIcon');
+    // Select the body element
+    let body = document.querySelector('body');
+    // Select the close button
+    let closeButton = document.querySelector('.close');
+
+    // Add click event listener to the shopping cart icon
+    iconCart.addEventListener('click', () => {
+        // Toggle the 'showCart' class on the body element
+        body.classList.toggle('showCart');
+    });
+
+    // Add click event listener to the close button
+    closeButton.addEventListener('click', () => {
+        // Remove the 'showCart' class from the body element
+        body.classList.remove('showCart');
+    });
+});
 
     </script>
 
