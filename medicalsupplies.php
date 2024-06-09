@@ -13,7 +13,7 @@ include("connect.php");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicine</title>
-    <link rel="stylesheet" href="css/styles.css"> 
+    <link rel="stylesheet" href="css/med.css"> 
     <link rel="shortcut icon" href="images/mlog.jpg">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -22,361 +22,21 @@ include("connect.php");
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
-    <style>
-
-.logo {
-    font-size: 30px;
-    font-weight: bold;
-    color: #FFA500;
-    font-family: "Oswald", sans-serif;
-    margin-bottom: 100px;
-}
-.menu {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 100px;
-}
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.card {
-    width: calc(33.33% - 70px);
-    margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}
-.card:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-.card-body {
-    padding: 13px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center; 
-}
-.card h5, .card h3 {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    width: 100%;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.card h5 {
-    font-size: 20px; 
-    margin-bottom: 10px;
-}
-
-.card h3 {
-    font-size: 18px; 
-    margin-bottom: 10px;
-    font-family: 'Times New Roman', Times, serif;
-}
-.card-img-top {
-    width: 100%;
-    height: auto;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-@media (max-width: 768px) {
-    .card {
-        width: calc(50% - 20px);
-    }
-}
-.search-container {
-    display: flex;
-    align-items: center;
-}
-
-.search {
-    display: flex;
-    align-items: center;
-    margin-bottom: 100px;
-    flex: 1; /* Allow the search container to grow */
-}
-
-.srch {
-    flex: 1;
-    padding: 5px 10px;
-}
-.btnsearch {
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #ff7200;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    margin-left: 10px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 200%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-body {
-    max-height: 560px;
-    overflow-y: auto;
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    max-width: 500px;
-}
-
-.btn{
-    margin-top: 30px;
-    background-color: #0000FF;
-    color: #fff;
-    padding: 5px 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    outline: none; 
-    font-size: 18px;
-}
-
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}   
-
-p {
-    line-height: 1.5;
-    margin-bottom: 15px;
-}
-
-
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-top: 15px;
-    cursor: pointer;
-}
-
-.add-to-cart-btn {
-    background-color: #52595D;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 50px;
-    font-size: 16px;
-    margin-left: 10px; /* Add margin between search and add to cart button */
-    margin-bottom: 30px;
-    font-family: "Oswald", sans-serif;
-}
-
-.fa-shopping-cart{
-  font-size: 13px; /* Adjust size as needed */
-  background-color: #FF8400; /* Example background color */
-  color: #ffffff; /* Example text color */
-  border: none;
-  border-radius: 50%; /* To make it circular */
-  padding: 10px; /* Adjust padding as needed */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.fa-cart-shopping img {
-  width: 24px; /* Adjust the width as needed */
-  height: 24px; /* Adjust the height as needed */
-  margin-right: 5px; /* Adjust the spacing between the icon and the image */
-}
-.btn-shopping-cart{
-    color: orange;
-    border-radius: 10%;
-    position: relative; /* Enable relative positioning */
-    left: 250px; /* Move to the right by 150px */
-    margin-bottom: 95px;
-}
-
-
-.cartTab {
-    width: 600px;
-    background-color: #353432;
-    color: #eee;
-    position: fixed;
-    top: 0;
-    right: -600px; /* initially hidden */
-    bottom: 0;
-    display: grid;
-    grid-template-rows: 70px 1fr 70px;
-    transition: .5s;
-    z-index: 999; /* Ensure it's above other content */
-    font-family: "Oswald", sans-serif;
-    
-}
-
-body.showCart .cartTab {
-    right: 0; /* Slide in when body has showCart class */
-}
-
-.cartTab h1 {
-    padding: 20px;
-    margin: 0;
-    font-weight: 300;
-}
-
-.cartTab .btn-cls {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    font-family: "Oswald", sans-serif;
-
-}
-
-.cartTab button {
-    border-radius: 50px;
-    border: none;
-    font-family: "Oswald", sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    
-}
-
-.cartTab .close {
-    background-color: #EEEEEE;
-}
-.cartTab .checkOut {
-    background-color: #FFA500;
-    
-    
-}
-.listCart  img {
-    width: 100%;
-}
-
-.listCart  {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Add some gap between items */
-    overflow-y: auto; /* Enable scrolling if items exceed height */
-    max-height: calc(100% - 140px); /* Adjust maximum height as needed */
-}
-
-.listCart .quantity span {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background-color: #eee;
-    border-radius: 50%;
-    color: #555;
-    cursor: pointer;
-}
-
-.listCart .quantity span:nth-child(2) {
-    background-color: transparent;
-    color: #eee;
-    cursor: auto;
-    font-family: "Oswald", sans-serif;
-}
-
-.listCart :nth-child(even) {
-    background-color: #eee1;
-}
-
-.listCart {
-    overflow: auto;
-}
-
-.listCart::-webkit-scrollbar {
-    width: 0;
-}
-
-/* Ensure the cart tab is displayed on top of other content */
-.cartTab.show {
-    display: block;
-    z-index: 999;
-}
-
-
-.listCart  {
-    display: grid;
-    grid-template-columns: 70px 150px 50px 1fr 30px; /* Added extra column for the remove item icon */
-    gap: 10px;
-    text-align: center;
-    align-items: center;
-    margin-right: 20px;
-}
-
-
-.listCart .uil-times-circle {
-    cursor: pointer;
-    font-size: 25px;
-}
-
-
-.alert {
-  padding: 20px;
-  background-color: green;
-  color: white;
-}
-
-.closebtn {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.closebtn:hover {
-  color: black;
-}
-
-    </style>
-
-
+   
 </head>
 <body>
 
 
-<?php
-try {
-	echo $_SESSION["error"];
-} catch (Exception $ex) {
-	
-}
 
-?>
 <div class="navbar">
     <div class="icon">
         <a href="index.php" class="logo" style="text-decoration: none;">MCIS</a>
     </div>
 
-        <div class="menu">
+    <div class="menu">
             <ul>
                 <li class="dropdown">
-                    <a href="" class="dropbtn">PRODUCTS</a>
+                    <a href="javascript:void(0);" class="dropbtn" id="productsDropdown">PRODUCTS</a>
                     <div class="dropdown-content">
                         <a href="medicine.php">All Products</a>
                         <a href="tables.php">Medicine</a>
@@ -385,67 +45,70 @@ try {
                     </div>
                 </li>
                 <li><a href="Pharmacies.php">A.BDRUGMART</a></li>
-                <li><a href="about.php">ABOUT</a></li>
+                <li><a href="medicine.php">ABOUT</a></li>
                 <li><a href="mycart.php">MY CART</a></li>
             </ul>
         </div>
-
-        
-
-        <a class="btn-shopping-cart" id="sidebarToggle" role="button" aria-controls="offcanvasExample" onclick="toggleCart()">
+ 
+        <div>
+        <a class="btn-shopping-cart" id="sidebarToggle" role="button"  aria-controls="offcanvasExample" onclick="toggleCart()">
     <i class="fa fa-shopping-cart" id="cartIcon"></i>
-        
-</a> 
 
-
-    <div class="search">
+</div>
+        <div class="search" style="text-decoration: none;  ">
         <input class="srch" type="search" name="" placeholder="Search" id="medicineSearch">
-        <button class="btnsearch" style="margin-right: 10px;" onclick="searchMedicine()">Search</button>
+        <button class="btnsearch" onclick="searchMedicine()">Search</button>
     </div>
+</a> 
+</div>
     
-    <div class="cartTab" id="cartTab">
+    
+<div class="cartTab" id="cartTab">
     <h1>Shopping Cart</h1>
-    <div class="listCart">
-        
-<?php
-    include('connect.php');
-    $sql = "SELECT * FROM addtocart WHERE Checkout = ''";
-    $result = mysqli_query($conn, $sql);
-    $datas = array();
+    <div class="listCart" id="listCart">
+        <?php
+        include('connect.php');
+        $sql = "SELECT * FROM addtocart WHERE Checkout = ''";
+        $result = mysqli_query($conn, $sql);
 
-    if (mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $datas[] = $row;
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '
+                <div class="product">
+                    <img src="'.$row['Image'].'" alt="'.$row['Name'].'">
+                    <div class="info">
+                        <div class="name">'.$row['Name'].'</div> 
+                        
+                    </div>
+                    <div>
+                        <div class="price">₱'.$row['Price'].'</div>
+                    </div>
+                    <div class="quantity">
+                        <span onclick="changeQuantity(this, -1)">-</span>
+                        <span>'.$row['Quantity'].'</span>
+                        <span onclick="changeQuantity(this, 1)">+</span>
+                    </div>
+                    <div class="remove" onclick="removeFromCart('.$row['cart_id'].')">
+                        <i class="uil uil-times-circle"></i>
+                    </div>
+                </div>';
+            }
+        } else {
+            echo "<p>No items in the cart.</p>";
         }
-    }
-
-    foreach ($datas as $data) {
-        echo '
-        <div class="product">
-            <img src="'.$data['Image'].'" alt="'.$data['Name'].'">
-            <div>'.$data['Name'].'</div> 
-            <div class="price">'.$data['Price'].'</div>
-            <div class="quantity">
-                <span onclick="changeQuantity(this, -1)">-</span>
-                <span>'.$data['Quantity'].'</span>
-                <span onclick="changeQuantity(this, 1)">+</span>
-            </div>
-            <a href="#" id="'.$data['product_id'].'" class="delbutton" title="Click to Delete the product">
-                <button class="btn btn-danger"><i class="icon-trash"></i></button>
-            </a>
-        </div>
-        ';
-    }
-?>
-
+        mysqli_close($conn);
+        ?> 
     </div>
+
+
+    
     <div class="btn-cls">
-        <button class="close" style="font-size: 14px;">CLOSE</button>
-        <button class="checkOut" onclick="goToContactPage()">Check Out</button>
+    <button class="close" id="closeCartBtn" style="font-size: 14px;">CLOSE</button>
+    <button id="checkOutButton" class="checkOut" onclick="goToContactPage()">Check Out</button>
+
     </div>
 </div>
 
-</div>
 
 <!--Cards-->
 <div class="container" id="medicineContainer">
@@ -472,7 +135,7 @@ try {
         
             <h5 class="card-title">Omron Digital Thermometer MC-246</h5>
             <h3>Price: PHP 298.00</h3>
-            <h3>In Stock</h3>
+            <h3>In Stock :3</h3>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#thermoModal">
                 More Info
             </button>
@@ -636,9 +299,6 @@ try {
 <div class="card">
     <img src="images/bloodpressure.jpg" class="card-img-top" alt="bloodpressure">
     <div class="card-body">
-
-
-
 
         <form class="card-body" method="post">
             <div class="row">
@@ -901,42 +561,163 @@ document.getElementById("searchInput").addEventListener("keypress", function(eve
 <?php 
 
 ?>
-function toggleCart() {
-    document.body.classList.toggle('showCart');
-}
+  function toggleCart() {
+        document.body.classList.toggle('showCart');
+    }
 
-function removeItem(button) {
-    const item = button.closest('.item');
-    item.remove();
-}
+    function changeQuantity(button, delta) {
+        const quantityElement = button.parentElement.querySelector('span:nth-child(2)');
+        let quantity = parseInt(quantityElement.innerText) + delta;
+        if (quantity < 1) quantity = 1;
+        quantityElement.innerText = quantity;
 
- function changeQuantity(button, delta) {
-    const quantityElement = button.parentElement.querySelector('span:nth-child(2)');
-    let quantity = parseInt(quantityElement.innerText) + delta;
-    if (quantity < 1) quantity = 1;
-    quantityElement.innerText = quantity;
+        // Update total price
+        const priceElement = button.closest('.item').querySelector('.price');
+        const pricePerUnit = parseFloat(priceElement.innerText.replace('$', ''));
+        const totalPrice = quantity * pricePerUnit;
+        priceElement.innerText = `$${totalPrice.toFixed(2)}`;
+    }
 
-    // Update total price
-    const priceElement = button.closest('.item').querySelector('.price');
-    const pricePerUnit = parseFloat(priceElement.innerText.replace('$', ''));
-    const totalPrice = quantity * pricePerUnit;
-    priceElement.innerText = `$${totalPrice.toFixed(2)}`;
-}
+    document.addEventListener('DOMContentLoaded', (event) => {
+            const closeButton = document.getElementById('closeCartBtn');
+            const cart = document.getElementById('cart');
 
-document.addEventListener("DOMContentLoaded", function() {
+            function toggleCart() {
+                document.body.classList.toggle('showCart');
+                if (document.body.classList.contains('showCart')) {
+                    localStorage.setItem('cartState', 'open');
+                } else {
+                    localStorage.setItem('cartState', 'closed');
+                }
+            }
 
-    // Add click event listener to the close button
-    closeButton.addEventListener('click', () => {
-        // Remove the 'showCart' class from the body element
-        body.classList.remove('showCart');
-    });
-});
+            closeButton.addEventListener('click', () => {
+                toggleCart();
+            });
 
-
+            // Check the stored state in localStorage when the page loads
+            if (localStorage.getItem('cartState') === 'open') {
+                document.body.classList.add('showCart');
+            }
+        });
+    
     </script>
 
+<script>
+    document.getElementById('productsDropdown').addEventListener('click', function() {
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === 'block') {
+            dropdownContent.style.display = 'none';
+        } else {
+            dropdownContent.style.display = 'block';
+        }
+    });
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>
+
+ 
 
 
+
+<script>
+    document.getElementById('checkOutButton').addEventListener('click', function() {
+        // Assuming you have retrieved the medicine name and new stock value already
+        var medicineName = "Omron Digital Thermometer MC-246"; // Adjust this based on how you're retrieving the medicine name
+        var newStockValue = 2; // Adjust this based on how you're retrieving the new stock value
+
+        // Create a new XMLHttpRequest object
+        var xhttp = new XMLHttpRequest();
+
+        // Define the PHP script URL that updates the database
+        var url = "checkout.php";
+
+        // Define the parameters to be sent with the AJAX request
+        var params = "medicine_name=" + medicineName + "&new_stock=" + newStockValue;
+
+        // Open a POST request to the PHP script URL
+        xhttp.open("POST", url, true);
+
+        // Set the Content-Type header for POST requests
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        // Define the callback function to handle the response from the server
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // Handle the response from the server
+                console.log(this.responseText); // For debugging purposes
+                // You can update the UI or perform any other action based on the response here
+            }
+        };
+
+        // Send the AJAX request with the parameters
+        xhttp.send(params);
+    });
+</script>
+
+<script>
+function removeFromCart(cart_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "remove_from_cart.php?cart_id=" + cart_id, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // Handle response here, like updating the cart display
+            // For example, you can update the listCart div with the new cart contents
+            document.getElementById("listCart").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+</script>
+
+
+
+
+<script>
+function removeFromCart(cart_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "remove_from_cart.php?cart_id=" + cart_id, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText); // Log the response for debugging
+            // Attempt to remove the specific item from the cart display
+            var cartItem = document.getElementById("listcart" + cart_id);
+            if (cartItem !== null) {
+                cartItem.remove();
+            } else {
+                console.error("Cart item with ID " + cart_id + " not found.");
+            }
+            // Auto-refresh the cart contents
+            refreshCart();
+        }
+    };
+    xhr.send();
+}
+function refreshCart() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "medicine.php", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            document.getElementById("listCart").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+</script>
+
+
+    
 </body>
 </html>
         <?php

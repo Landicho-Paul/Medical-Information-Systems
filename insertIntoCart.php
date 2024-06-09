@@ -1,26 +1,31 @@
 <?php
 session_start();
-    include("connect.php");
+include("connect.php");
 
-    $image = $_POST['image'];
-    $Name = $_POST['title'];
-    $Price = (int)$_POST['price'];
-    $dateandtime = date("Y-m-d h:i:sa");
-    
+$image = $_POST['image'];
+$Name = $_POST['title'];
+$Price = (int)$_POST['price'];
+$dateandtime = date("Y-m-d h:i:sa");
 
-    $sql = "INSERT INTO addtocart (Name, Price, Quantity, Date,image)
-    VALUES ('$Name', '$Price', 1 ,'$dateandtime','$image')";
+// Insert item into the cart
+$sql = "INSERT INTO addtocart (Name, Price, Quantity, Date, image)
+VALUES ('$Name', '$Price', 1, '$dateandtime', '$image')";
 
-    if ($conn->query($sql) === TRUE) {
-    
-    header("Location: medicalsupplies.php");
+if ($conn->query($sql) === TRUE) {
     $_SESSION["error"] = '<div class="alert">
-    <span class="closebtn" onclick="this.parentElement.style.display="none";">&times;</span> 
+    <span class="closebtn" onclick="this.parentElement.style.display=\'none\';">&times;</span> 
     Cart Successfully Added
   </div>';
-    } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-    }
+} else {
+    $_SESSION["error"] = '<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display=\'none\';">&times;</span> 
+    Error: ' . $sql . '<br>' . $conn->error . '
+  </div>';
+}
 
-    $conn->close();
+$conn->close();
+
+// Redirect back to the referring page
+header("Location: " . $_SERVER['HTTP_REFERER']);
+exit();
 ?>

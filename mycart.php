@@ -1,8 +1,8 @@
 <?php
 
-    require_once("connect.php");
-    $query = " SELECT * FROM addtocart WHERE Checkout = 'Approve' ";
-    $result = mysqli_query($conn,$query);
+require_once("connect.php");
+$query = " SELECT * FROM addtocart WHERE Checkout = 'Approve' ";
+$result = mysqli_query($conn, $query);
 
 ?>
 <!DOCTYPE html>
@@ -10,7 +10,6 @@
 <head>
     <title>MCIS</title>
     <link rel="shortcut icon" href="images/mlog.jpg">
-    <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -54,7 +53,8 @@ body::before {
     flex: 1;
     display: flex;
     justify-content: flex-start; /* Align menu items to the start */
-    margin-left: 100px; /* Adjust this value to move the menu left or right */
+    margin-left: 750px; /* Adjust this value to move the menu left or right */
+    font-size: 17px;
 }
 
 .menu ul {
@@ -159,12 +159,34 @@ tbody tr:nth-child(odd) {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
+td a {
+    color: #333; /* Button color */
+    text-decoration: none; /* Remove underline */
+    margin: 0 5px; /* Adjust spacing between buttons */
+}
+th act {
+    width: 100px;
+}
+
+td a ion-icon {
+    font-size: 20px; /* Adjust icon size */
+}
+
+.delete-button ion-icon {
+    color: red; /* Change delete button color */
+}
+
+/* Hover effect for buttons */
+td a:hover {
+    opacity: 0.8; /* Reduce opacity on hover */
+}
+
+
     </style>
 </head>
 <body>
 
 <?php
-session_start();
 
 // Check if user is logged in
 if(isset($_SESSION['user_id'])) {
@@ -193,10 +215,10 @@ if(isset($_GET['logout'])) {
         <a href="index.php" class="logo" style="text-decoration: none; ">MCIS</a>
     </div>
 
-        <div class="menu" >
+    <div class="menu">
             <ul>
                 <li class="dropdown">
-                    <a href="" class="dropbtn">PRODUCTS</a>
+                    <a href="javascript:void(0);" class="dropbtn" id="productsDropdown">PRODUCTS</a>
                     <div class="dropdown-content">
                         <a href="medicine.php">All Products</a>
                         <a href="tables.php">Medicine</a>
@@ -231,7 +253,7 @@ if(isset($_GET['logout'])) {
                 <th>Items</th>
                 <th>Quantity</th>
                 <th>Total</th>
-                <th>Action</th>
+                <th class="act">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -252,23 +274,121 @@ if(isset($_GET['logout'])) {
                 <td><?php echo $row['Quantity'] ?></td>
                 <td>₱ <?php echo $row['Price'] ?>.00</td>
                 <td>
-                    <a href="#"><ion-icon name="create"></ion-icon></a>
-                    <a href="#"><ion-icon name="trash"></ion-icon></a>
-                    <a href="#"><ion-icon name="download"></ion-icon></a>
-                </td>
+                <td>
+    </td>
+    <td>
+        <a href="#" class="delete-button" data-id="<?php echo $row['cart_id']; ?>"><ion-icon name="trash"></ion-icon></a>
+    <td>
+    <a href="#" id="download-link"><ion-icon name="download"></ion-icon></a>
+</td>
+
                 
-            </tr>
-            <?php 
-                
-                }
-                
-            ?>
-            
+    </tr>
+    <?php 
+        
+        }
+        
+    ?>
+    
         </tbody>
     </table>
 </div>
     </div>
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+
+<!--Delete row-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.delete-button').click(function(e) {
+            e.preventDefault();
+            var cartId = $(this).data('id');
+            var $button = $(this); // Store the button reference
+            if (confirm("Are you sure you want to delete this item?")) {
+                $.ajax({
+                    url: 'delete_cart_item.php',
+                    type: 'POST',
+                    data: { id: cartId },
+                    success: function(response) {
+                        // Optionally, you can check the response for success message
+                        if (response.includes("Record deleted successfully")) {
+                            location.reload(); // Reload the page
+                            // $button.closest('tr').remove(); // Alternatively, remove the row from the table
+                        } else {
+                            console.error("Failed to delete record: " + response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX error: " + xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+<!-- Download Order Receipt-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#download-link').click(function() {
+            // AJAX call to retrieve data from the database
+            $.ajax({
+                type: 'POST',
+                url: 'downloadreceipt.php',
+                success: function(response) {
+                    // Open a new tab with the response data
+                    var newTab = window.open();
+                    newTab.document.write('<!DOCTYPE html><html><head><title>Receipt</title><style>body { font-family: Arial, sans-serif; } .receipt { width: 400px; margin: 20px auto; border: 2px solid #000; padding: 20px; } .receipt-header { text-align: center; font-weight: bold; } .receipt-table { width: 100%; border-collapse: collapse; margin-top: 20px; } .receipt-table th, .receipt-table td { padding: 10px; border-bottom: 1px solid #ddd; } .receipt-table th { text-align: left; }</style></head><body><div class="receipt"><div class="receipt-header">Receipt</div><table class="receipt-table">' + response + '</table></div></body></html>');
+                    
+                    // Download the content of the new tab as a file
+                    var htmlContent = newTab.document.documentElement.outerHTML;
+                    var blob = new Blob([htmlContent], { type: 'text/html' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'OrderReceipt.html'; // Set the file name
+                    link.click();
+                    
+                    // Close the new tab
+                    newTab.close();
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    // Handle error
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('productsDropdown').addEventListener('click', function() {
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === 'block') {
+            dropdownContent.style.display = 'none';
+        } else {
+            dropdownContent.style.display = 'block';
+        }
+    });
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>
+
+
 </body>
+
 </html>

@@ -1,115 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.icon {
-    width: 200px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    margin-right: 300px;
-}
-
-.menu {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 100px;
-}
-
-.search-container,
-.search {
-    display: flex;
-    align-items: center;
-    margin-bottom: 100px;
-    flex: 1; /* Allow the search container to grow */
-}
-
-.srch {
-    flex: 1;
-    padding: 5px 10px;
-}
-
-.btnsearch {
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #ff7200;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    margin-left: 10px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
-}
-
-.card {
-    margin-bottom: 30px;
-    align-self: auto;
-    margin-left: 75px;
-    border: 100px solid #ccc;
-}
-
-.card-img-top,
-.card-img-top-p {
-    width: 100%;
-    height: auto;
-    margin-top: 50px;
-    margin-right: 10px;
-    object-fit: fill;
-}
-
-.card-title,
-.card-title-p {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 10px;
-    font-family: 'Times New Roman', Times, serif;
-}
-
-.card-text {
-    font-size: 50px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.btn-primary {
-    background-color: #ff7200;
-    border-color: #ff7200;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-bottom: 50px;
-    font-family: Arial, Helvetica, sans-serif;
-    text-decoration: none; 
-}
-
-.btn-primary:hover {
-    background-color: #ff9f4d;
-}
-
-.scrollspy-example {
-    padding: 20px;
-    border: 1px solid #ccc; /* Border */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #f9f9f9; /* Background color */
-}
-
-.list-group-item {
-    border-bottom: 1px solid #ccc; 
-    margin-left: 50px;
-}
-
-/* Medicine */
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -131,9 +19,6 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
-.card:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
 
 .card-body {
     padding: 13px;
@@ -144,8 +29,7 @@
     align-items: center;
 }
 
-.card h5,
-.card h3 {
+.card h5, .card h3 {
     margin: 0;
     padding: 0;
     text-align: center;
@@ -166,39 +50,94 @@
     font-family: 'Times New Roman', Times, serif;
 }
 
+.card-img-top {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
 @media (max-width: 768px) {
     .card {
         width: calc(50% - 20px);
     }
 }
-
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 20px;
+    background-color: #3D3C3A;
 }
+
+.navbar .logo {
+    text-decoration: none;
+}
+
 .menu {
-    flex-grow: 1;
     display: flex;
+    flex-grow: 1;
     justify-content: center;
-    margin-bottom: 100px;
+    margin: 0;
+    margin-left: 290px;
+
 }
+
+.menu ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu ul li {
+    margin: 0 15px;
+    position: relative;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-family: "Oswald", sans-serif;
+}
+
+.menu ul li .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    top: 100%;
+}
+
+.menu ul li .dropdown-content a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #333;
+    font-family: "Oswald", sans-serif;
+}
+
+
 .search-container {
     display: flex;
     align-items: center;
+    margin-left: auto; 
+    border-radius: px;
 }
 
 .search {
     display: flex;
     align-items: center;
-    margin-bottom: 100px;
-    flex: 1; /* Allow the search container to grow */
+    border-radius: 5px;
+    text-decoration: none;
 }
 
 .srch {
-    flex: 1;
     padding: 5px 10px;
 }
+
 .btnsearch {
     padding: 5px 10px;
     cursor: pointer;
@@ -207,7 +146,10 @@
     border: none;
     border-radius: 4px;
     margin-left: 10px;
+    text-decoration: none;
 }
+
+
 .modal {
     display: none;
     position: fixed;
@@ -249,7 +191,7 @@
     font-size: 28px;
     font-weight: bold;
 }
-.close:hover,
+
 .close:focus {
     color: black;
     text-decoration: none;
@@ -274,31 +216,34 @@ img {
     cursor: pointer;
     border-radius: 50px;
     font-size: 16px;
-    margin-left: 10px; /* Add margin between search and add to cart button */
+    margin-left: 5px; 
     margin-bottom: 30px;
     font-family: "Oswald", sans-serif;
+    margin-top: 30px;
 }
 
-.fa-shopping-cart{
-  font-size: 13px; /* Adjust size as needed */
-  background-color: #FF8400; /* Example background color */
-  color: #ffffff; /* Example text color */
-  border: none;
-  border-radius: 50%; /* To make it circular */
-  padding: 10px; /* Adjust padding as needed */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.fa-shopping-cart {
+    font-size: 13px; /* Adjust size as needed */
+    background-color: #FF8400; /* Example background color */
+    color: #ffffff; /* Example text color */
+    border: none;
+    border-radius: 50%; /* To make it circular */
+    padding: 10px; /* Adjust padding as needed */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 30px;
 }
+
 .fa-cart-shopping img {
-  width: 24px; /* Adjust the width as needed */
-  height: 24px; /* Adjust the height as needed */
-  margin-right: 5px; /* Adjust the spacing between the icon and the image */
+    width: 24px; /* Adjust the width as needed */
+    height: 24px; /* Adjust the height as needed */
+    margin-right: 15px; /* Adjust the spacing between the icon and the image */
 }
-.btn-shopping-cart{
+
+.btn-shopping-cart {
     color: orange;
     border-radius: 10%;
     position: relative; /* Enable relative positioning */
-    left: 250px; /* Move to the right by 150px */
 }
 
 
@@ -318,7 +263,7 @@ img {
 }
 
 body.showCart .cartTab {
-    right: 0; /* Slide in when body has showCart class */
+    right: 0; 
 }
 
 .cartTab h1 {
@@ -415,3 +360,64 @@ body.showCart .cartTab {
 .listCart .item .uil-times-circle:hover {
     color: red; /* Change color on hover */
 }
+
+
+
+
+/* Product row */
+.productRow {
+    border-bottom: 1px solid #ccc; /* Add a bottom border to separate rows */
+    padding: 10px; /* Add some padding for spacing */
+}
+
+.product {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Align items vertically */
+}
+
+.product img {
+    max-width: 100px; /* Limit image width */
+    margin-right: 20px; /* Add space between image and other content */
+}
+
+.info {
+    flex-grow: 1; /* Allow the info div to grow and fill available space */
+}
+
+.name {
+    font-weight: bold; /* Make product name bold */
+}
+
+.price {
+    color: #007bff; /* Change price color */
+    margin: 0 50px; /* Add space between price and quantity */
+
+}
+
+.quantity {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Align items vertically */
+    margin-right: 20px;
+}
+
+.quantity span {
+    cursor: pointer; /* Change cursor to pointer for clickable spans */
+    margin: 0 5px; /* Add space between quantity controls */
+    width: 30px; /* Set width for the circle */
+    height: 30px; /* Set height for the circle */
+    border-radius: 50%; /* Make it a circle */
+    display: flex; /* Use flexbox for centering text */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #f0f0f0; /* Background color for visibility */
+}
+
+.remove {
+    cursor: pointer; /* Change cursor to pointer for clickable remove button */
+    margin-right: 20px;
+}
+
+
+
+
+

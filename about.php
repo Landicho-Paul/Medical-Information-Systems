@@ -3,7 +3,6 @@
 <head>
     <title>MCIS</title>
     <link rel="shortcut icon" href="images/mlog.jpg">
-    <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -47,7 +46,7 @@ body::before {
     flex: 1;
     display: flex;
     justify-content: flex-start; /* Align menu items to the start */
-    margin-left: 140px; /* Adjust this value to move the menu left or right */
+    margin-left: 750px; /* Adjust this value to move the menu left or right */
 }
 
 .menu ul {
@@ -77,6 +76,7 @@ body::before {
     background-color: white; /* Ensures the background is white */
     color: black; /* Ensures the text color is black */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for better visibility */
+    font-family: "Oswald", sans-serif;
 }
 
 .menu ul li .dropdown-content a {
@@ -84,12 +84,11 @@ body::before {
     padding: 10px; /* Adds padding for better spacing */
     text-decoration: none; /* Removes underline from links */
     display: block; /* Ensures each link takes up full width */
+    font-family: "Oswald", sans-serif;
 }
 
 
-.menu ul li .dropdown-content a:hover {
-    background-color: #f1f1f1; /* Optional: Adds a light grey background on hover for better UX */
-}
+
 
 .sign {
     display: flex;
@@ -168,10 +167,10 @@ if(isset($_GET['logout'])) {
         <a href="index.php" class="logo" style="text-decoration: none; ">MCIS</a>
     </div>
 
-        <div class="menu" >
+    <div class="menu">
             <ul>
                 <li class="dropdown">
-                    <a href="" class="dropbtn">PRODUCTS</a>
+                    <a href="javascript:void(0);" class="dropbtn" id="productsDropdown">PRODUCTS</a>
                     <div class="dropdown-content">
                         <a href="medicine.php">All Products</a>
                         <a href="tables.php">Medicine</a>
@@ -180,7 +179,7 @@ if(isset($_GET['logout'])) {
                     </div>
                 </li>
                 <li><a href="Pharmacies.php">A.BDRUGMART</a></li>
-                <li><a href="about.php">ABOUT</a></li>
+                <li><a href="medicine.php">ABOUT</a></li>
                 <li><a href="mycart.php">MY CART</a></li>
             </ul>
         </div>
@@ -210,5 +209,29 @@ if(isset($_GET['logout'])) {
 
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+
+    <script>
+    document.getElementById('productsDropdown').addEventListener('click', function() {
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === 'block') {
+            dropdownContent.style.display = 'none';
+        } else {
+            dropdownContent.style.display = 'block';
+        }
+    });
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>
 </body>
 </html>

@@ -139,9 +139,12 @@ tbody tr:nth-child(odd) {
                 <td><?php echo $row['Quantity'] ?></td>
                 <td>₱ <?php echo $row['Price'] ?>.00</td>
                 <td>
-                    <a href="#"><ion-icon name="create"></ion-icon></a>
-                    <a href="#"><ion-icon name="trash"></ion-icon></a>
-                    <a href="#"><ion-icon name="download"></ion-icon></a>
+                    <td>
+        <a href="#" class="delete-button" data-id="<?php echo $row['cart_id']; ?>"><ion-icon name="trash"></ion-icon></a>
+    </td>
+    <td>
+    <a href="#" id="download-link"><ion-icon name="download"></ion-icon></a>
+</td>
                 </td>
                 
             </tr>
@@ -163,6 +166,66 @@ tbody tr:nth-child(odd) {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+
+<!-- Download Order Receipt-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#download-link').click(function() {
+            // AJAX call to retrieve data from the database
+            $.ajax({
+                type: 'POST',
+                url: 'downloadreceipt.php',
+                success: function(response) {
+                    // Open a new tab with the response data
+                    var newTab = window.open();
+                    newTab.document.write('<!DOCTYPE html><html><head><title>Receipt</title><style>body { font-family: Arial, sans-serif; } .receipt { width: 400px; margin: 20px auto; border: 2px solid #000; padding: 20px; } .receipt-header { text-align: center; font-weight: bold; } .receipt-table { width: 100%; border-collapse: collapse; margin-top: 20px; } .receipt-table th, .receipt-table td { padding: 10px; border-bottom: 1px solid #ddd; } .receipt-table th { text-align: left; }</style></head><body><div class="receipt"><div class="receipt-header">Receipt</div><table class="receipt-table">' + response + '</table></div></body></html>');
+                    
+                    // Download the content of the new tab as a file
+                    var htmlContent = newTab.document.documentElement.outerHTML;
+                    var blob = new Blob([htmlContent], { type: 'text/html' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'OrderReceipt.html'; // Set the file name
+                    link.click();
+                    
+                    // Close the new tab
+                    newTab.close();
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    // Handle error
+                }
+            });
+        });
+    });
+</script>
+
+<!--Delete row-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.delete-button').click(function(e) {
+            e.preventDefault();
+            var cartId = $(this).data('id');
+            if(confirm("Are you sure you want to delete this item?")) {
+                $.ajax({
+                    url: 'delete_cart_item.php',
+                    type: 'POST',
+                    data: {id: cartId},
+                    success: function(response) {
+                        // Reload the page or remove the row from the table
+                        location.reload(); // Reload the page
+                        //$(this).closest('tr').remove(); // Remove the row from the table
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 
 

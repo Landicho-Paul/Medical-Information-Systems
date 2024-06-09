@@ -3,7 +3,6 @@
 <head>
     <title>MCIS</title>
     <link rel="shortcut icon" href="images/mlog.jpg">
-    <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -46,7 +45,9 @@ body::before {
     flex: 1;
     display: flex;
     justify-content: flex-start; /* Align menu items to the start */
-    margin-left: 100px; /* Adjust this value to move the menu left or right */
+    margin-left: 750px; /* Adjust this value to move the menu left or right */
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
 }
 
 .menu ul {
@@ -88,6 +89,17 @@ body::before {
     background-color: #f1f1f1; /* Optional: Adds a light grey background on hover for better UX */
 }
 
+.btn-look {
+    border-radius: 5px;
+    background-color: #FFA500;
+    color: black;
+    font-family: "Oswald", sans-serif;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+}
+
 .sign {
     display: flex;
     align-items: center;
@@ -100,57 +112,58 @@ body::before {
     padding: 10px 20px;
     background: #FFA500;
     border-radius: 5px;
+    font-family: "Oswald", sans-serif;
 }
 
 
 
 .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 50px;
-        }
-        .card {
-            border: 1px solid #E5E4E2; 
-            border-radius: 10px; 
-            margin: 0 10px; 
-            width: 1300px; 
-            height: 530px;
-            border-style: none;
-        }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
+.card {
+    border: 1px solid #E5E4E2; 
+    border-radius: 10px; 
+    margin: 0 10px; 
+    width: 1300px; 
+    height: 530px;
+    border-style: none;
+}
 
-        .card-img-top-p {
-            width: 100%;
-            height: auto;
-            border-top-left-radius: 10px; 
-            border-top-right-radius: 10px; 
-        }
+.card-img-top-p {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px; 
+}
 
-        .card-body {
-            text-align: center;
-        }
+.card-body {
+    text-align: center;
+}
 
-        .card-title {
-            color: #E5E4E2; 
-            font-weight: bold;
-            margin-top: 20px; 
-            margin-bottom: 10px; 
-            font-size: 200%;
-            font-family: "Oswald", sans-serif;
-        
-            
-            
-        }
+.card-title {
+    color: #E5E4E2; 
+    font-weight: bold;
+    margin-top: 20px; 
+    margin-bottom: 10px; 
+    font-size: 200%;
+    font-family: "Oswald", sans-serif;
 
-        .card-text {
-            color: #E5E4E2; 
-            font-size: 190%; 
-            margin-bottom: 20px;
-            font-family: "Oswald", sans-serif;
-        }
+    
+    
+}
+
+.card-text {
+    color: #E5E4E2; 
+    font-size: 190%; 
+    margin-bottom: 20px;
+    font-family: "Oswald", sans-serif;
+}
 
 
-    </style>
+</style>
 </head>
 <body>
 
@@ -184,10 +197,10 @@ if(isset($_GET['logout'])) {
         <a href="index.php" class="logo" style="text-decoration: none; ">MCIS</a>
     </div>
 
-        <div class="menu" >
+    <div class="menu">
             <ul>
                 <li class="dropdown">
-                    <a href="" class="dropbtn">PRODUCTS</a>
+                    <a href="javascript:void(0);" class="dropbtn" id="productsDropdown">PRODUCTS</a>
                     <div class="dropdown-content">
                         <a href="medicine.php">All Products</a>
                         <a href="tables.php">Medicine</a>
@@ -218,12 +231,36 @@ if(isset($_GET['logout'])) {
         <div class="card-body">
             <h5 class="card-title">A.B DRUGMART</h5>
             <p class="card-text">With us, your health is always first. <br> 45 San Juan, Sta Ana, Pampanga <br> 0998-574-8158/0908-892-8121 <br> abdrugmart@gmail.com</p>
-            <a href="https://maps.app.goo.gl/o7SavFrqFDaPTyqaA" class="btn btn-primary" style="text-decoration: none; background-color: orange; ">Look</a>     
+            <a href="https://maps.app.goo.gl/o7SavFrqFDaPTyqaA" class="btn-look">Look</a>     
         </div>
     </div> 
 </div>
 
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+
+    <script>
+    document.getElementById('productsDropdown').addEventListener('click', function() {
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === 'block') {
+            dropdownContent.style.display = 'none';
+        } else {
+            dropdownContent.style.display = 'block';
+        }
+    });
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>
 </body>
 </html>

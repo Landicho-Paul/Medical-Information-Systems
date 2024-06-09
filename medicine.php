@@ -1,10 +1,80 @@
+<?php
+include("connect.php");
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Array to store stock for each medicine separately
+$stocks = array();
+
+// Array of medicines to query
+$medicines = array("Solmux", "biogesic", "neozep", "robitussin", "alaxzan", "gaviscon", "nafarin",
+"decolgen", "medicol4", "medicol", "bioflu", "salonpas10", "salonpas20", "tempra", "vicks", "strepsilsO",
+"strepsilsCS", "strepsilsSF", "strepsilsOri", "strepsilsHL", "strepsilsW", "stresstabs", "cottonbuds108",
+"cottonbuds72", "cottonbuds200", "cottonballs50s", "cottonballs25g", "cottonballs50g", "babywipes80s",
+"babywipes10s", "offO100", "offK100", "offK50", "offO50", "colgate", "sensodyne", "Ctoothbrush", "Dtoothbrush",
+"safeguard175g", "safeguard60g", "safeguardLF", "safeguardFG", "dovebar", "nivea", "doveRO", "pampers",
+"thermometer", "surgicalmask", "kn95", "bloodpressure", "pregnancytest", "nebulizer");
+
+// Loop through each medicine
+foreach ($medicines as $medicine) {
+    // Initialize an array to store the stock for the current medicine
+    $stocks[$medicine] = array();
+
+    // Query to get the stock of each medicine
+    $sql = "SELECT stock FROM medicine WHERE medicine_name = '$medicine'";
+    $result = $conn->query($sql);
+
+    if ($result) { // Check if query was successful
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while ($row = $result->fetch_assoc()) {
+                // Store the stock of the medicine in its individual array
+                $stocks[$medicine][] = $row["stock"];
+            }
+        } else {
+            // If no results found, set stock to 0
+            $stocks[$medicine][] = 0;
+        }
+    } else {
+        // If there was an error with the query
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    // Check if there's a new stock value for the current medicine
+    if (isset($newStocks[$medicine])) {
+        // Update the stock for the current medicine
+        $newStock = $newStocks[$medicine];
+        $updateSql = "UPDATE medicine SET stock = '$newStock' WHERE medicine_name = '$medicine'";
+
+        if ($conn->query($updateSql) === TRUE) {
+            echo "Record updated successfully for $medicine<br>";
+        } else {
+            echo "Error updating record for $medicine: " . $conn->error . "<br>";
+        }
+    }
+}
+
+// Output the stock for each medicine separately
+foreach ($stocks as $medicine => $stockArray) {
+    // Output or process the stocks as needed
+}
+
+$conn->close();
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicine</title>
-    <link rel="stylesheet" href="css/styles.css"> 
+    <link rel="stylesheet" href="css/med.css">
     <link rel="shortcut icon" href="images/mlog.jpg">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -17,310 +87,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
-    <style>
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.logo {
-    font-size: 30px;
-    font-weight: bold;
-    color: #FFA500;
-    font-family: "Oswald", sans-serif;
-}
-.card {
-    width: calc(33.33% - 20px);
-    margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}
-.card:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-.card-body {
-    padding: 13px;
-    height: 105%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-}
-.card h5, .card h3 {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    width: 100%;
-    font-weight: bold;
-    margin-top: 10px;
-}
-.card h5 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-family: "Oswald", sans-serif;
-}
-.card h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    font-family: 'Times New Roman', Times, serif;
-}
-.card-img-top {
-    width: 100%;
-    height: auto;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-@media (max-width: 768px) {
-    .card {
-        width: calc(50% - 20px);
-    }
-}
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.menu {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 100px;
-}
-.search-container {
-    display: flex;
-    align-items: center;
-}
 
-.search {
-    display: flex;
-    align-items: center;
-    margin-bottom: 100px;
-    flex: 1; /* Allow the search container to grow */
-}
-
-.srch {
-    flex: 1;
-    padding: 5px 10px;
-}
-.btnsearch {
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #ff7200;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    margin-left: 10px;
-}
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 200%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-.modal-body {
-    max-height: 560px;
-    overflow-y: auto;
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    max-width: 500px;
-}
-.btn {
-    margin-top: 30px;
-    background-color: #0000FF;
-    color: #fff;
-    padding: 5px 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    outline: none;
-    font-size: 18px;
-    font-family: "Oswald", sans-serif;
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-p {
-    line-height: 1.5;
-    margin-bottom: 15px;
-}
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-top: 15px;
-    cursor: pointer;
-}
-.add-to-cart-btn {
-    background-color: #52595D;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 50px;
-    font-size: 16px;
-    margin-left: 10px; /* Add margin between search and add to cart button */
-    margin-bottom: 30px;
-    font-family: "Oswald", sans-serif;
-}
-
-.fa-shopping-cart{
-  font-size: 13px; /* Adjust size as needed */
-  background-color: #FF8400; /* Example background color */
-  color: #ffffff; /* Example text color */
-  border: none;
-  border-radius: 50%; /* To make it circular */
-  padding: 10px; /* Adjust padding as needed */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.fa-cart-shopping img {
-  width: 24px; /* Adjust the width as needed */
-  height: 24px; /* Adjust the height as needed */
-  margin-right: 5px; /* Adjust the spacing between the icon and the image */
-}
-.btn-shopping-cart{
-    color: orange;
-    border-radius: 10%;
-    position: relative; /* Enable relative positioning */
-    left: 250px; /* Move to the right by 150px */
-}
-
-
-.cartTab {
-    width: 600px;
-    background-color: #353432;
-    color: #eee;
-    position: fixed;
-    top: 0;
-    right: -600px; /* initially hidden */
-    bottom: 0;
-    display: grid;
-    grid-template-rows: 70px 1fr 70px;
-    transition: .5s;
-    z-index: 999; /* Ensure it's above other content */
-    font-family: "Oswald", sans-serif;
-}
-
-body.showCart .cartTab {
-    right: 0; /* Slide in when body has showCart class */
-}
-
-.cartTab h1 {
-    padding: 20px;
-    margin: 0;
-    font-weight: 300;
-}
-
-.cartTab .btn-cls {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    font-family: "Oswald", sans-serif;
-}
-
-.cartTab button {
-    border: none;
-    border-radius: 50px;
-    font-family: "Oswald", sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-
-}
-
-.cartTab .close {
-    background-color: #EEEEEE;
-}
-.cartTab .checkOut {
-    background-color: #FFA500;
-}
-
-.listCart .item img {
-    width: 100%;
-}
-
-.listCart .item {
-    display: grid;
-    grid-template-columns: 70px 150px 50px 1fr;
-    gap: 10px;
-    text-align: center;
-    align-items: center;
-}
-
-.listCart .quantity span {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background-color: #eee;
-    border-radius: 50%;
-    color: #555;
-    cursor: pointer;
-}
-
-.listCart .quantity span:nth-child(2) {
-    background-color: transparent;
-    color: #eee;
-    cursor: auto;
-    font-family: "Oswald", sans-serif;
-}
-
-.listCart .item:nth-child(even) {
-    background-color: #eee1;
-}
-
-.listCart {
-    overflow: auto;
-}
-
-.listCart::-webkit-scrollbar {
-    width: 0;
-}
-
-/* Ensure the cart tab is displayed on top of other content */
-.cartTab.show {
-    display: block;
-    z-index: 999;
-}
-
-
-.listCart .item {
-    display: grid;
-    grid-template-columns: 70px 150px 50px 1fr 30px; /* Added extra column for the remove item icon */
-    gap: 10px;
-    text-align: center;
-    align-items: center;
-    margin-right: 20px;
-}
-
-
-.listCart .item .uil-times-circle {
-    cursor: pointer;
-    font-size: 10px;
-}
-
-.listCart .item .uil-times-circle:hover {
-    color: red; /* Change color on hover */
-}
-
-    </style>
 </head>
 <body>
 
@@ -379,62 +146,7 @@ body.showCart .cartTab {
         });
     });
 
-    // Add a Medicine in shopping cart
-    function addToCart(button) {
-    const card = button.closest('.card');
-    const title = card.querySelector('.card-title').innerText;
-    const price = parseFloat(card.querySelector('h3').innerText.replace('Price: PHP ', '')); // Parse the price as a float
-    const imgSrc = card.querySelector('.card-img-top').src;
 
-    const cartTab = document.querySelector('.listCart');
-
-    // Create a new item element
-    const newItem = document.createElement('div');
-    newItem.classList.add('item');
-    newItem.setAttribute('data-title', title);
-    newItem.setAttribute('data-price', price); // Store the item price as a data attribute
-    newItem.innerHTML = `
-        <img src="${imgSrc}" alt="${title}">
-        <div>${title}</div> 
-        <div class="price">PHP ${price.toFixed(2)}</div> <!-- Display the price -->
-        <div class="quantity">
-            <span onclick="changeQuantity(this, -1)">-</span>
-            <span>1</span>
-            <span onclick="changeQuantity(this, 1)">+</span>
-        </div>
-        <span class="uil uil-times-circle" onclick="removeItem(this)"></span>
-    `;
-
-    // Append the new item to the cartTab
-    cartTab.appendChild(newItem);
-
-    // Show the cartTab
-    document.body.classList.add('showCart');
-
-    // Calculate and update the total price
-    updateTotalPrice();
-}
-
-function updateTotalPrice() {
-    const items = document.querySelectorAll('.item');
-    let totalPrice = 0;
-
-    items.forEach(item => {
-        const price = parseFloat(item.getAttribute('data-price'));
-        const quantity = parseInt(item.querySelector('.quantity span:nth-child(2)').innerText);
-        totalPrice += price * quantity;
-    });
-
-    document.getElementById('totalPrice').innerText = `Total: PHP ${totalPrice.toFixed(2)}`;
-}
-
-function removeItem(button) {
-    const item = button.closest('.item');
-    item.remove();
-
-    // Update total price after removing item
-    updateTotalPrice();
-}
 
 function changeQuantity(button, delta) {
     const quantityElement = button.parentElement.querySelector('span:nth-child(2)');
@@ -452,14 +164,13 @@ function changeQuantity(button, delta) {
 
 
 <div class="navbar">
-    <div class="icon" style="margin-bottom: 100px;">
-        <a href="index.php" class="logo" style="text-decoration: none;">MCIS</a>
-    </div>
-
+        <div class="icon">
+            <a href="index.php" class="logo">MCIS</a>
+        </div>
         <div class="menu">
             <ul>
                 <li class="dropdown">
-                    <a href="" class="dropbtn">PRODUCTS</a>
+                    <a href="#" class="dropbtn" onclick="toggleDropdown(event)">PRODUCTS</a>
                     <div class="dropdown-content">
                         <a href="medicine.php">All Products</a>
                         <a href="tables.php">Medicine</a>
@@ -472,51 +183,129 @@ function changeQuantity(button, delta) {
                 <li><a href="mycart.php">MY CART</a></li>
             </ul>
         </div>
-
-        <a class="btn-shopping-cart " style="margin-bottom: 100px; color: orange;" id="sidebarToggle" role="button" aria-controls="offcanvasExample">
-  <i class="fa fa-shopping-cart" id="cartIcon"></i>
-</a> 
-
-
-<div class="cartTab" id="cartTab">
-    <h1>Shopping Cart</h1>
-    <div class="listCart">
-
-
-
-        
-        
-    </div>
-    <div class="btn-cls">
-        <button class="close" style="font-size: 14px;">CLOSE</button>
-        <button class="checkOut" style="font-size: 14px;">Check Out</button>
-    </div>
-</div>
-
-
-
-    <div class="search">
-        <input class="srch" type="search" name="" placeholder="Search" id="medicineSearch">
-        <button class="btnsearch" style="margin-right: 10px;" onclick="searchMedicine()">Search</button>
-    </div>
-</div>
-
-
-<!--cards-->
-<div class="container" id="medicineContainer">
-    <div class="card">
-        <img src="images/solmux.jfif" class="card-img-top" alt="Solmux">
-        <div class="card-body"><br><br><br>
-            <h5 class="card-title">Carbocisteine Solmux Forte  500mgX 60mL</h5>
-            <h3>Price: PHP 129.0</h3>
-            <h3>In Stock</h3>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#solmuxModal">
-                More Info
-            </button>
-            <button class="add-to-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+        <a class="btn-shopping-cart" id="sidebarToggle" role="button" aria-controls="offcanvasExample">
+            <i class="fa fa-shopping-cart" id="cartIcon"></i>
+        </a>
+        <div class="search">
+            <input class="srch" type="search" name="" placeholder="Search" id="medicineSearch">
+            <button class="btnsearch" onclick="searchMedicine()">Search</button>
         </div>
     </div>
 
+
+    <div class="cartTab" id="cartTab">
+    <h1>Shopping Cart</h1>
+    <div class="listCart" id="listCart">
+        <?php
+        include('connect.php');
+        $sql = "SELECT * FROM addtocart WHERE Checkout = ''";
+        $result = mysqli_query($conn, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '
+                <div class="product">
+                    <img src="'.$row['Image'].'" alt="'.$row['Name'].'">
+                    <div class="info">
+                        <div class="name">'.$row['Name'].'</div> 
+                        
+                    </div>
+                    <div>
+                        <div class="price">₱'.$row['Price'].'</div>
+                    </div>
+                    <div class="remove" onclick="removeFromCart('.$row['cart_id'].')">
+                        <i class="uil uil-times-circle"></i>
+                    </div>
+                </div>';
+            }
+        } else {
+            echo "<p>No items in the cart.</p>";
+        }
+        mysqli_close($conn);
+        ?> 
+    </div>
+
+
+    
+    <div class="btn-cls">
+    <button class="close" id="closeCartBtn" style="font-size: 14px;">CLOSE</button>
+    <button id='checkOutButton' onclick="updateStock; goToContactPage();">Check Out</button>
+   
+    </div>
+</div>
+
+
+
+    
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  function updateStock(medicine) {
+            $.ajax({
+                type: "POST",
+                url: "updatestock.php",
+                data: { medicine_name: medicine },
+                success: function(response) {
+                    alert(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr);
+                }
+            });
+        }
+
+    function goToContactPage() {
+            window.location.href = 'updateCart.php'; 
+            console.log("goToContactPage function called");
+        }
+  
+</script>
+
+<!--cards-->
+<div class="container" id="medicineContainer" >
+
+    <div class="card">
+        <img src="images/solmux.jfif" class="card-img-top" alt="Solmux">
+        <div class="card-body"><br><br><br>
+
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/solmux.jfif" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Carbocisteine Solmux Forte  500mgX 60mL" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="129" >
+            </div>
+            
+            <h5 class="card-title">Carbocisteine Solmux Forte  500mgX 60mL</h5>
+            <h3>Price: PHP 129.00</h3>
+      
+               
+            <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["Solmux"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#solmuxModal">
+                More Info
+            </button>
+            
+            <input type="submit"  formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn" >
+        </form>
+         
+        </div>
+    </div>
+ 
 
     <div class="modal fade" id="solmuxModal" tabindex="-1" aria-labelledby="solmuxModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -546,40 +335,36 @@ function changeQuantity(button, delta) {
     </div>
 
     <div class="card">
-        <img src="images/para.jpg" class="card-img-top" alt="Paracetamol">
-        <div class="card-body">
-
-
-
-        <form class="card-body" method="post">
+    <img src="images/para.jpg" class="card-img-top" alt="biogesic">
+    <div class="card-body">
+        <form class="card-body" method="post" action="insertIntoCart.php">
             <div class="row">
-                
-                <input type="hidden" name="image" value="images/para.jpg" >
+                <input type="hidden" name="image" value="images/para.jpg">
             </div>
             <div class="row">
-                
-                <input type="hidden" name="title" value="Biogesic Paracetamol 500mg 10 Tablet" >
+                <input type="hidden" name="title" value="Biogesic Paracetamol 500mg 10 Tablet">
             </div>
-
             <div class="row">
-                
-                <input type="hidden" name="price"  value="105" > 
-                
+                <input type="hidden" name="price" value="105">
             </div>
-     
             <h5 class="card-title">Biogesic Paracetamol 500mg 10 Tablet</h5>
             <h3>Price: PHP 105.00</h3>
-            <h3>In Stock</h3>
+
+            <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["biogesic"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
+
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#paracetamolModal">
                 More Info
             </button>
-            
-            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
-           
+            <input type="submit"  formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
         </form>
-
-      </div>
     </div>
+</div>
 
     <div class="modal fade" id="paracetamolModal" tabindex="-1" aria-labelledby="paracetamolModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -613,13 +398,40 @@ function changeQuantity(button, delta) {
     <div class="card">
         <img src="images/neo.jpg" class="card-img-top" alt="Neozep">
         <div class="card-body">
-            <h5 class="card-title">Neozep Forte</h5>
+            
+        <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/neo.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Neozep Forte" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="7" > 
+                
+            </div>
+     
+          <h5 class="card-title">Neozep Forte</h5>
             <h3>Price: PHP 7.00</h3>
-            <h3>Unavailable</h3>
+            <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["neozep"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#neozepModal">
                 More Info
             </button>
-            <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+            
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+
         </div>
     </div>
 
@@ -672,13 +484,43 @@ function changeQuantity(button, delta) {
     <div class="card">
         <img src="images/rob.jpg" class="card-img-top" alt="Robitussin" style="margin-top: 36px;">
     <div class="card-body">
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/rob.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Guaifenesin Robitussin 100mg/5mL Syrup" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="150.75" > 
+                
+            </div>
+     
+      
         <h5 class="card-title">Guaifenesin Robitussin 100mg/5mL Syrup</h5>
         <h3>Price: PHP 150.75</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["robitussin"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn-more-info btn-primary" data-toggle="modal" data-target="#robitussinModal">
             More Info
         </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+
+            
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+
+
     </div>
 </div>
 
@@ -720,13 +562,42 @@ function changeQuantity(button, delta) {
 <div class="card">
     <img src="images/alax.jpg" class="card-img-top" alt="Alaxzan" style="margin-top: 28px;">
     <div class="card-body">
-        <h5 class="card-title">Alaxan Ibuprofen Paracetamol 200mg/325mg tablet</h5>
-        <h3>Price: PHP 20.50</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/alax.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Alaxan Ibuprofen Paracetamol 200mg/325mg tablet" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="20.50" > 
+                
+            </div>
+                        
+                <h5 class="card-title">Alaxan Ibuprofen Paracetamol 200mg/325mg tablet</h5>
+                <h3>Price: PHP 20.50</h3>
+            <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["alaxzan"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        More Info
+                    </button>
+ 
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+
+        
     </div>
 </div>
 
@@ -762,13 +633,42 @@ function changeQuantity(button, delta) {
 <div class="card">
     <img src="images/gav.jfif" class="card-img-top" alt="Gaviscon" style="width: 250px; height: 290px;">
     <div class="card-body">
-        <h5 class="card-title" style="margin-bottom: 10px;">GAVISCON Double Action Liquid Sachet 10ml</h5>
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/gav.jfif" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="GAVISCON Double Action Liquid Sachet 10ml" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="33.50" > 
+                
+            </div>
+                        
+              <h5 class="card-title" style="margin-bottom: 10px;">GAVISCON Double Action Liquid Sachet 10ml</h5>
         <h3>Price: PHP 33.50</h3>
-        <h3>In Stock</h3>
+            <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["gaviscon"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gavisconModal">
             More Info
         </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+      
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+
+
+        
     </div>
 </div>
 
@@ -809,13 +709,41 @@ function changeQuantity(button, delta) {
     <div class="card">
     <img src="images/nafarin.jpg" class="card-img-top" alt="Nafarin">
     <div class="card-body">
-        <h5 class="card-title">Nafarin Tablet 1s (Phenylephrine HCI + Chlorphenamine Maleate + Paracetamol)</h5>
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/nafarin.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Nafarin Tablet 1s (Phenylephrine HCI + Chlorphenamine Maleate + Paracetamol)" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="8.50" > 
+                
+            </div>
+                        
+         <h5 class="card-title">Nafarin Tablet 1s (Phenylephrine HCI + Chlorphenamine Maleate + Paracetamol)</h5>
         <h3>Price: PHP 8.50</h3>
-        <h3>Unavailable</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["nafarin"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nafarinModal">
             More Info
         </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+        
+      
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+        
     </div>
 </div>
 
@@ -855,13 +783,43 @@ function changeQuantity(button, delta) {
 <div class="card">
     <img src="images/decol.jfif" class="card-img-top" alt="Decolgen">
     <div class="card-body">
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/decol.jfif" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Decolgen Phenylephrine HCl 10mg Paracetamol 500mg Chlorphenamine maleate" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="8.00" > 
+                
+            </div>
+
         <h5 class="card-title">Decolgen Phenylephrine HCl 10mg Paracetamol 500mg Chlorphenamine maleate</h5>
         <h3>Price: PHP 8.00</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["decolgen"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#decolgenModal">
             More Info
         </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+           
+   
+      
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+
+        
     </div>
 </div>
 
@@ -904,13 +862,41 @@ function changeQuantity(button, delta) {
     <div class="card">
     <img src="images/medicol.jpg" class="card-img-top" alt="Medicol">
     <div class="card-body">
-        <h5 class="card-title">Medicol Ibuprofen Advance 400mg 1 Softgel Capsule</h5>
+
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/medicol.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="Medicol Ibuprofen Advance 400mg 1 Softgel Capsule" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="12.25" > 
+                
+            </div>
+
+         <h5 class="card-title">Medicol Ibuprofen Advance 400mg 1 Softgel Capsule</h5>
         <h3>Price: PHP 12.25</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["medicol4"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#medicolModal">
             More Info
         </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+        
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
+    
     </div>
 </div>
 
@@ -968,13 +954,39 @@ function changeQuantity(button, delta) {
     <div class="card">
     <img src="images/medadv.jpg" class="card-img-top" alt="Medicol Advance" style="margin-bottom: 15px;">
     <div class="card-body">
-        <h5 class="card-title">MEDICOL ADVANCE Ibuprofen 200mg Softgel Capsule 1's</h5>
-        <h3>Price: PHP 9.00</h3>
-        <h3>In Stock</h3>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#medicolAdvanceModal">
-            More Info
-        </button>
-        <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+
+
+    <form class="card-body" method="post">
+            <div class="row">
+                
+                <input type="hidden" name="image" value="images/medadv.jpg" >
+            </div>
+            <div class="row">
+                
+                <input type="hidden" name="title" value="MEDICOL ADVANCE Ibuprofen 200mg Softgel Capsule 1's" >
+            </div>
+
+            <div class="row">
+                
+                <input type="hidden" name="price"  value="9.00" > 
+                
+            </div>
+                <h5 class="card-title">MEDICOL ADVANCE Ibuprofen 200mg Softgel Capsule 1's</h5>
+                        <h3>Price: PHP 9.00</h3>
+                        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["medicol"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#medicolAdvanceModal">
+                            More Info
+                        </button>
+    
+            <input type="submit" formaction="insertIntoCart.php" name="submit" value="Add to Cart" class="add-to-cart-btn">
+           
+        </form>
     </div>
 </div>
 
@@ -1027,7 +1039,13 @@ function changeQuantity(button, delta) {
     <div class="card-body">
         <h5 class="card-title">Bioflu Tablet 1s (Phenylephrine HCI + Chlorphenamine Maleate + Paracetamol)</h5>
         <h3>Price: PHP 9.00</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["bioflu"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#biofluModal">
             More Info
         </button>
@@ -1076,7 +1094,13 @@ function changeQuantity(button, delta) {
     <div class="card-body">
         <h5 class="card-title">SALONPAS Methyl Salicylate / L-Menthol / Tocopherol Acetate / Dl-Camphor 36mg / 33mg / 12mg / 7.1mg Medicated Patch 10's</h5>   
         <h3>Price: PHP 62.50</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["salonpas10"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#salonpasModal">
             More Info
         </button>
@@ -1113,7 +1137,13 @@ function changeQuantity(button, delta) {
     <div class="card-body">
         <h5 class="card-title">Salonpas Methylsalicylate 105mg Menthol 31.5mg Medicated Patch</h5>   
         <h3>Price: PHP 108.75</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["salonpas20"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#salonpasModal">
             More Info
         </button>
@@ -1150,7 +1180,13 @@ function changeQuantity(button, delta) {
     <div class="card-body">
         <h5 class="card-title">Tempra Forte Orange Syrup 250mg 60ml</h5>
         <h3>Price: PHP 154.00</h3>
-        <h3>In Stock</h3>
+        <?php  
+                echo "<h3>Stock: ";
+                foreach ($stocks["tempra"] as $stock) {
+                    echo $stock;
+                }
+                echo "</h3>";
+            ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tempraModal">
             More Info
         </button>
@@ -2015,10 +2051,6 @@ function changeQuantity(button, delta) {
     </div>
 </div>
 
-
-
-
-
     <div class="card">
         <img src="images/toothbrush.png" class="card-img-top" alt="toothbrush">
         <div class="card-body">
@@ -2680,6 +2712,70 @@ function changeQuantity(button, delta) {
 
   
     </script>
+
+
+
+<script>
+        function toggleDropdown(event) {
+            event.preventDefault();
+            const dropdownContent = event.target.nextElementSibling;
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                const dropdowns = document.getElementsByClassName('dropdown-content');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === 'block') {
+                        openDropdown.style.display = 'none';
+                    }
+                }
+            }
+        }
+    </script>
+
+
+<script>
+function removeFromCart(cart_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "remove_from_cart.php?cart_id=" + cart_id, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText); // Log the response for debugging
+            // Attempt to remove the specific item from the cart display
+            var cartItem = document.getElementById("listcart" + cart_id);
+            if (cartItem !== null) {
+                cartItem.remove();
+            } 
+
+            refreshCart();
+        }
+    };
+    xhr.send();
+}
+function refreshCart() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "medicine.php", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            document.getElementById("listCart").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+
+function goToContactPage() {
+            window.location.href = 'updateCart.php'; 
+            console.log("goToContactPage function called");
+        }
+  
+</script>
+
+
+
+
 
 
 

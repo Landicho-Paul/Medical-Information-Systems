@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "mcis";
+$dbname = "mcis2";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -38,22 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["reduceStock"])) {
             if ($conn->query($sql_reduce_stock) === TRUE) {
                 $response["success"] = true;
                 $response["message"] = "Stock reduced successfully";
-            } else {
-                $response["success"] = false;
-                $response["message"] = "Error reducing stock: " . $conn->error;
-            }
-        } else {
-            $response["success"] = false;
-            $response["message"] = "Error: Quantity to reduce exceeds current stock";
+            } 
+
         }
-    } else {
-        $response["success"] = false;
-        $response["message"] = "Error: Medicine not found";
+
     }
-
-    
-
-
 }
 
 
@@ -69,8 +58,6 @@ if ($result->num_rows > 0) {
 // Close the database connection
 $conn->close();
 
-// Pass medicineData to JavaScript
-echo "<script>var medicineData = " . json_encode($medicineData) . ";</script>";
 ?>
 
 
@@ -170,11 +157,7 @@ echo "<script>var medicineData = " . json_encode($medicineData) . ";</script>";
     </nav>
 
     <?php
-// Database connection parameters
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mcis";
+include("connect.php");
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
